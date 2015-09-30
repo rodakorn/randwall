@@ -6,7 +6,7 @@ Gnome shell extension "Random Walls" for automatically change your desktop and l
 Based on Lukas Knuth's Backslide code at https://bitbucket.org/LukasKnuth/backslide
 
 Features
-========
+--------
 
 * Set the interval you want your wallpapers changed
 * Define if you want the same background for desktop and lockscreen
