@@ -8,10 +8,15 @@ Based on Lukas Knuth's Backslide code at https://bitbucket.org/LukasKnuth/backsl
 Features
 --------
 
-* Set the interval you want your wallpapers changed
+* Set the interval you want your backgrounds changed
 * Define if you want the same background for desktop and lockscreen
 * Backgrounds can be changed at any time using the "play" and "shuffle" buttons
 
+Settings
+--------
+
 The first time this extension is executed needs to be configured:
+
+
 
 At least one folder with images has to be selected.
