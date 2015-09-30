@@ -27,4 +27,7 @@ When you have added some folders, if you click on the camera icon in the status 
 
 ![](http://i.imgur.com/MwXj7WB.png)
 
+You can define if you want to use the same background on the desktop and lock screen in the settings dialog.
+
+![](http://i.imgur.com/w0Qiwd4.png)
 
