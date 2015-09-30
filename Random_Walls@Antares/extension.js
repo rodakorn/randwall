@@ -274,13 +274,9 @@ function init() {
 	Convenience.initTranslations();
     wallUtils = new Wallpapers.WallUtils(_settings);
     if(!wallUtils.isEmpty()) {
-    	log("Iniciando extension... creando timer");
     	this.MyTimer = new Interval.MyTimer();
-    	log("Timer creado...seteando callback");
     	this.MyTimer.setCallback(function() {
-    		log("Dentro del callback... cambiando wallpaper");
     		wallUtils.changeWallpapers();
-    		log("Wallpaper cambiado");
     	//	WARNING! Without the return true the timer will stop after the first run 
     		return true;
     	});
@@ -291,19 +287,13 @@ let _indicator;
 let _settings;
 
 function enable() {
-	log("Haciendo el enable de la extension... creando el indicador");
 	_indicator = new RandWallMenu(_settings);
-	log("Creando el objeto de utiles para wallpapers");
 	wallUtils.setIndicator(_indicator);
 	if(!wallUtils.isEmpty()) {
-		log("Cambiando wallpapers");
 		wallUtils.changeWallpapers();
-		log("Iniciando el timer creado en el init");
 		this.MyTimer.start();
 	}
-	log("Añadiendo el indicador al panel...");
 	Main.panel.addToStatusArea('randwall',_indicator,1,'right');
-	log("Añadido... enable acabado");
 	_settings.connect('changed::' + SETTINGS_SAME_WALL,Lang.bind(this,applyChanges));
 	_settings.connect('changed::' + SETTINGS_FOLDER_LIST,Lang.bind(this,applyChanges));
 }
@@ -321,9 +311,6 @@ function applyChanges() {
 }
 
 function disable() {
-	log("Destruyendo la extension... pasamos a hacer el destroy del indicador");
 	_indicator.destroy();
-	log("Indicador destruido. Parando el timer");
 	this.MyTimer.stop();
-	log("Parado timer y disable acabado");
 }
