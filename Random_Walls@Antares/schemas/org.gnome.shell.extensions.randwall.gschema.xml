@@ -1,0 +1,23 @@
+<schemalist gettext-domain="gnome-shell-extensions">
+  <schema id="org.gnome.shell.extensions.randwall" path="/org/gnome/shell/extensions/randwall/">
+    <key name="folder-list" type="as">
+      <default>[]</default>
+      <summary>User Image Folders</summary>
+      <description>A list of folder paths, each containing images that will be used as wallpapers</description>
+    </key>
+
+    <key name="same-wall" type="b">
+      <default>false</default>
+      <summary>Use the same wallpaper for desktop and lockscreen</summary>
+      <description>Set to false if you want desktop and lockscreen wallpapers different</description>
+    </key>
+
+    <key name="change-time" type="i">
+      <range min="1" max="3000" />
+      <default>60</default>
+      <summary>How often are the wallpapers changed (in minutes)</summary>
+      <description>Set how often are the wallpapers changed (min 1 min. max 3000 min)</description>
+    </key>
+
+  </schema>
+</schemalist>
