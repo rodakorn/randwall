@@ -2,12 +2,15 @@ const Clutter = imports.gi.Clutter;
 const St = imports.gi.St;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
+const GObject = imports.gi.GObject;
+const Pixbuf = imports.gi.GdkPixbuf;
 const Main = imports.ui.main;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const GLib = imports.gi.GLib;
 const Convenience = Me.imports.convenience;
 const Interval = Me.imports.assets.timeout;
 const Wallpapers = Me.imports.assets.wallpapers;
+const Chooser = Me.imports.assets.pictureChooser;
 const MyConfig = Me.imports.prefs;
 const Lang = imports.lang;
 const Tweener = imports.ui.tweener;
@@ -21,8 +24,13 @@ const _ = Gettext.gettext;
 
 const SETTINGS_SAME_WALL = "same-wall";
 const SETTINGS_FOLDER_LIST = "folder-list";
+const PIXBUF_COL = 0;
 
-const THUMB_WIDTH = 200; //Change on stylesheet.css too!!
+const CURRENT_DESK = 0;
+const CURRENT_LOCK = 1;
+const NEXT_DESK = 2;
+const NEXT_LOCK = 3;
+
 
 let metadata = Me.metadata;
 let settings;
@@ -128,9 +136,9 @@ const NextWallControls = new Lang.Class({
 		});
 		
 		if(!_settings.get_boolean(SETTINGS_SAME_WALL)) {
-			this.box.set_style("padding-left: " + (THUMB_WIDTH - 30) + "px;");
+			this.box.set_style("padding-left: " + (Chooser.THUMB_WIDTH - 30) + "px;");
 		} else
-			this.box.set_style("padding-left: " + ((THUMB_WIDTH / 2) - 36) + "px;"); //36 = button_size*2 + padding*2
+			this.box.set_style("padding-left: " + ((Chooser.THUMB_WIDTH / 2) - 36) + "px;"); //36 = button_size*2 + padding*2
 			
 		this.actor.add(this.box,{expand:true});
 		this.box.add_actor(new ControlButton("media-playback-start",this._changeWalls ).actor );
@@ -164,24 +172,38 @@ const thumbPreviews = new Lang.Class({
 		//Label + Icon Desktop Wallpaper Box
 		let desktopBox = new St.BoxLayout({vertical: true});
 		let textLabel = (!_settings.get_boolean(SETTINGS_SAME_WALL))?_("Desktop"):_("Desktop & Lockscreen");
-		let desktopLabel = new St.Label({text: textLabel});
-		desktopBox.add_child(desktopLabel);
+		desktopBox.add_child(new St.Label({text: textLabel, style_class:"label-thumb"}));
 		let filewall = wallUtils.getCurrentWall();
-		this.wallIcon = new St.Icon({gicon: filewall, icon_size: THUMB_WIDTH, style_class: 'wall-preview'}); 
-		let thumbHeight = THUMB_WIDTH*wallUtils.getScreenAspectRatio();
-		this.wallIcon.set_style("height:" + thumbHeight + "px;");
-		desktopBox.add_child(this.wallIcon);
+		if(this._isNextThumbs) 
+			this.wallIcon = new Chooser.ThumbIcon(filewall,function(){
+				_indicator.close();
+				new Chooser.PictureChooser(NEXT_DESK,wallUtils).open();
+			});
+		else
+			this.wallIcon = new Chooser.ThumbIcon(filewall,function(){
+				_indicator.close();
+				new Chooser.PictureChooser(CURRENT_DESK,wallUtils).open();
+			});
+		desktopBox.add_actor(this.wallIcon.actor);
 		MainBox.add_child(desktopBox);
+		MainBox.add_child(new St.Icon({width:20}));
 		
 		if(!_settings.get_boolean(SETTINGS_SAME_WALL)) {
 			//Label + Lockscreen Wallpaper Box
 			let lockBox = new St.BoxLayout({vertical: true});
-			let lockLabel = new St.Label({text: _("Lockscreen")});
-			lockBox.add_child(lockLabel);
+			lockBox.add_child(new St.Label({text: _("Lockscreen"),style_class:"label-thumb"}));
 			let lockwall = wallUtils.getCurrentLockWall();
-			this.lockIcon = new St.Icon({gicon: lockwall,icon_size: THUMB_WIDTH, style_class: 'wall-preview'});
-			this.lockIcon.set_style("height:" + thumbHeight + "px;");
-			lockBox.add_child(this.lockIcon);
+			if(this._isNextThumbs) 
+				this.lockIcon = new Chooser.ThumbIcon(lockwall,function(){
+					_indicator.close();
+					new Chooser.PictureChooser(NEXT_LOCK,wallUtils).open();
+				});
+			else
+				this.lockIcon = new Chooser.ThumbIcon(lockwall,function(){
+					_indicator.close();
+					new Chooser.PictureChooser(CURRENT_LOCK,wallUtils).open();
+				});
+			lockBox.add_child(this.lockIcon.actor);
 			MainBox.add_child(lockBox);
 		}
 		
@@ -194,10 +216,10 @@ const thumbPreviews = new Lang.Class({
 			newIcon = wallUtils.getNextWall();
 		else
 			newIcon = wallUtils.getCurrentWall();
-		Tweener.addTween(this.wallIcon, {opacity:0,time:1,transition: 'easeOutQuad',onCompleteParams:[this.wallIcon,newIcon], onComplete:function(thumb,icon){
+		Tweener.addTween(this.wallIcon.actor, {opacity:0,time:1,transition: 'easeOutQuad',onCompleteParams:[this.wallIcon,newIcon], onComplete:function(thumb,icon){
 			thumb.set_gicon(icon);
 		}});
-		Tweener.addTween(this.wallIcon, {opacity:255,delay:1.3, time:1,transition: 'easeOutQuad'});
+		Tweener.addTween(this.wallIcon.actor, {opacity:255,delay:1.3, time:1,transition: 'easeOutQuad'});
 	}, 
 
 	
@@ -207,13 +229,12 @@ const thumbPreviews = new Lang.Class({
 			lockIcon = wallUtils.getNextLockWall();
 		else
 			lockIcon = wallUtils.getCurrentLockWall();
-		Tweener.addTween(this.lockIcon, {opacity:0,time:1,transition: 'easeOutQuad', onCompleteParams:[this.lockIcon,lockIcon], onComplete:function(thumb,icon){
+		Tweener.addTween(this.lockIcon.actor, {opacity:0,time:1,transition: 'easeOutQuad', onCompleteParams:[this.lockIcon,lockIcon], onComplete:function(thumb,icon){
 			thumb.set_gicon(icon);
 		}});
-		Tweener.addTween(this.lockIcon, {opacity:255,delay:1.3, time:1,transition: 'easeOutQuad'});
-	},
+		Tweener.addTween(this.lockIcon.actor, {opacity:255,delay:1.3, time:1,transition: 'easeOutQuad'});
+	}
 	
-
 });
 
 const RandWallMenu = new Lang.Class({
@@ -264,6 +285,10 @@ const RandWallMenu = new Lang.Class({
 		wallUtils.changeWallpapers();
     	//update thumbs
 		this.refreshThumbs();
+	},
+	
+	close: function() {
+		this.menu.close();
 	}
 	
 });

@@ -29,8 +29,40 @@ const WallUtils = new Lang.Class({
     	this._indicator = indicator;
     },
     
+    getDirs: function() {
+    	return this._dirs;
+    },
+    
+    getNumValidImages: function() {
+		let numFiles = 0;
+    	for(i=0;i<this._dirs.length;i++) {
+			let dir = Gio.File.new_for_path(this._dirs[i]);
+			
+			let fileEnum;
+		 	try {
+		 		fileEnum = dir.enumerate_children('standard::name,standard::type',
+			                                          Gio.FileQueryInfoFlags.NONE, null);
+		    } catch (e) {
+		        fileEnum = null;
+		    }
+    	
+	    	let info, child;
+	        while((info = fileEnum.next_file(null)) != null) {
+	        	let child = fileEnum.get_child(info);
+	        	//Check if is a regular file
+	        	if (info.get_file_type() == Gio.FileType.REGULAR) 
+	        		//Check if file is a valid image
+	        		if(/.*\.[jpg|jpeg|png]/.test(child.get_parse_name())) {
+	        			numFiles++;
+	        		}
+	        }
+    	}
+    	
+    	return numFiles;
+    },
+    
     getCurrentWall: function() {
-		let background_setting = new Gio.Settings({schema: "org.gnome.desktop.background"});
+    	let background_setting = new Gio.Settings({schema: "org.gnome.desktop.background"});
 		let pathFromURI = background_setting.get_string(SETTINGS_WALLS_URI).replace(/^file:\/\//g,'');
 		return new Gio.FileIcon({file: Gio.File.new_for_path(pathFromURI)});
 	},
@@ -39,6 +71,10 @@ const WallUtils = new Lang.Class({
 		let lockbackground_setting = new Gio.Settings({schema: "org.gnome.desktop.screensaver"});
 		let pathFromURI = lockbackground_setting.get_string(SETTINGS_LOCK_URI).replace(/^file:\/\//g,'');
 		return new Gio.FileIcon({file: Gio.File.new_for_path(pathFromURI)});
+	},
+	
+	getGiconFromPath: function(path) {
+		return new Gio.FileIcon({file: Gio.File.new_for_path(path)});
 	},
 	
 	getNextWall: function() {
@@ -59,6 +95,14 @@ const WallUtils = new Lang.Class({
 		lockbackground_setting.set_string(SETTINGS_LOCK_URI,"file://" + picture);
 	},
 
+	setNextLockWall: function(picture) {
+		this._nextLock = picture;
+	},
+	
+	setNextWall: function(picture) {
+		this._nextWall = picture;
+	},
+	
 	getRandomPicture: function() {
 		//Get list of dirs with images and select one randomly
 		//let listDirs = this._settings.get_strv(SETTINGS_FOLDER_LIST);
@@ -132,10 +176,6 @@ const WallUtils = new Lang.Class({
 		}
 	},
 	
-	getScreenAspectRatio: function() {
-		return Gdk.Screen.height()/Gdk.Screen.width();
-	},
-	
 	initValidDirs: function() {
 		let validDirs = [];
 		let listDirs = this._settings.get_strv(SETTINGS_FOLDER_LIST);
@@ -182,3 +222,7 @@ const WallUtils = new Lang.Class({
 	
 	
 });
+
+const getScreenAspectRatio = function() {
+	return Gdk.Screen.height()/Gdk.Screen.width();
+};
