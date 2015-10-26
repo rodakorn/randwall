@@ -197,7 +197,7 @@ const WallUtils = new Lang.Class({
 		        	//Check if is a regular file
 		        	if (info.get_file_type() == Gio.FileType.REGULAR) 
 		        		//Check if file is a valid image
-		        		if(/.*\.[jpg|jpeg|png]/.test(child.get_parse_name())) {
+		        		if(/.*\.[jpg|jpeg|png]/.test(child.get_parse_name().toLowerCase())) {
 		        			ok=true;
 		        			validDirs.push(listDirs[i]);
 		        		}

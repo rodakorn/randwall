@@ -187,8 +187,9 @@ const PictureChooser = new Lang.Class ({
 			let info;
 			while((info = fileEnum.next_file(null))) {
 				let name = info.get_name();
+				let nameNoExt = name.slice(0,name.lastIndexOf('.'));
 				//if(name.slice(0,text.length) == text) {
-				if(name.toLowerCase().search(text.toLowerCase()) != -1) {
+				if(nameNoExt.toLowerCase().search(text.toLowerCase()) != -1) {
 					let child = fileEnum.get_child(info);
 					results.push(child.get_parse_name());
 				}
