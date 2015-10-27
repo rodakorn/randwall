@@ -185,7 +185,7 @@ const WallUtils = new Lang.Class({
 				
 				let fileEnum;
 			 	try {
-			 		fileEnum = dir.enumerate_children('standard::name,standard::type',
+			 		fileEnum = dir.enumerate_children('standard::name,standard::type,standard::content-type',
 				                                          Gio.FileQueryInfoFlags.NONE, null);
 			    } catch (e) {
 			        fileEnum = null;
@@ -197,7 +197,7 @@ const WallUtils = new Lang.Class({
 		        	//Check if is a regular file
 		        	if (info.get_file_type() == Gio.FileType.REGULAR) 
 		        		//Check if file is a valid image
-		        		if(/.*\.[jpg|jpeg|png]/.test(child.get_parse_name().toLowerCase())) {
+		        		if(info.get_content_type().match(/^image\//i)) {
 		        			ok=true;
 		        			validDirs.push(listDirs[i]);
 		        		}

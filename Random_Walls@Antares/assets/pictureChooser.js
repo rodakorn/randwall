@@ -300,7 +300,7 @@ const PictureChooser = new Lang.Class ({
 			
 			let fileEnum;
 		 	try {
-		 		fileEnum = dir.enumerate_children('standard::name,standard::type',
+		 		fileEnum = dir.enumerate_children('standard::name,standard::type,standard::content-type',
 			                                          Gio.FileQueryInfoFlags.NONE, null);
 		    } catch (e) {
 		        fileEnum = null;
@@ -312,7 +312,7 @@ const PictureChooser = new Lang.Class ({
 	        	//Check if is a regular file
 	        	if (info.get_file_type() == Gio.FileType.REGULAR) 
 	        		//Check if file is a valid image
-	        		if(/.*\.[jpg|jpeg|png]/.test(child.get_parse_name())) {
+	        		if(info.get_content_type().match(/^image\//i)) {
 	        			let imagepath = child.get_parse_name();
 	        			//For every row create a table
 	        			if(table_col == 0) 
