@@ -1,7 +1,7 @@
 {
 "shell-version": ["3.14","3.16","3.18"],
 "uuid": "Random_Walls@Antares",
-"url": "https://github.com/rodakorn/randwall"
+"url": "https://github.com/rodakorn/randwall",
 "settings-schema": "org.gnome.shell.extensions.randwall",
 "gettext-domain" : "randwall",
 "name": "Random Walls",
