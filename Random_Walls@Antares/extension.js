@@ -1,12 +1,6 @@
-const Clutter = imports.gi.Clutter;
 const St = imports.gi.St;
-const Gio = imports.gi.Gio;
-const Gtk = imports.gi.Gtk;
-const GObject = imports.gi.GObject;
-const Pixbuf = imports.gi.GdkPixbuf;
 const Main = imports.ui.main;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
-const GLib = imports.gi.GLib;
 const Convenience = Me.imports.convenience;
 const Interval = Me.imports.assets.timeout;
 const Wallpapers = Me.imports.assets.wallpapers;
@@ -24,7 +18,6 @@ const _ = Gettext.gettext;
 
 const SETTINGS_SAME_WALL = "same-wall";
 const SETTINGS_FOLDER_LIST = "folder-list";
-const PIXBUF_COL = 0;
 
 const CURRENT_DESK = 0;
 const CURRENT_LOCK = 1;
