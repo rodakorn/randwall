@@ -17,8 +17,8 @@ const Columns = {
 };
 
 const SETTINGS_FOLDER_LIST = 'folder-list';
-const SETTINGS_SAME_WALL = "same-wall";
 const SETTINGS_CHANGE_TIME = "change-time";
+const SETTINGS_CHANGE_MODE = "change-mode";
 
 const SettingsWidget = new GObject.Class({
 	Name: "SettingsWidget",
@@ -47,15 +47,41 @@ const RandWallSettingsWidget = new GObject.Class({
 
 		this._store = new Gtk.ListStore();
 		this._store.set_column_types([GObject.TYPE_STRING]);
-		//Same Wall Switch
-		let gHBox = new Gtk.HBox({margin: 10, spacing: 20, hexpand: true});
-		let gLabel = new Gtk.Label({label: _("Use the same wallpaper for desktop and lockscreen"), halign: Gtk.Align.START});
-		gHBox.add(gLabel);
-		let gSwitch = new Gtk.Switch({halign: Gtk.Align.END});
-		gHBox.add(gSwitch);
-		this.add(gHBox);
-		this._settings.bind(SETTINGS_SAME_WALL,gSwitch,'active',Gio.SettingsBindFlags.DEFAULT);
+		//Change Mode
+		this.add(new Gtk.HSeparator());
+		this.add(new Gtk.Label({label: _("Change mode"),halign: Gtk.Align.START, margin: 10}));
+		let modeLabels = {
+	            'different': _("Change both desktop and lockscreen"),
+	            'same': _("Change desktop and lockscreen using the same image"),
+	            'desktop': _("Change only desktop wallpaper"),
+	            'lockscreen': _("Change only Lockscreen wallpaper")
+        };
+		let radio = null;
+		let range = this._settings.get_range(SETTINGS_CHANGE_MODE);
+		let currentMode = this._settings.get_string(SETTINGS_CHANGE_MODE);
+		let modes = range.deep_unpack()[1].deep_unpack();
+		let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,row_spacing: 6,column_spacing: 6,margin_top: 6, margin_left: 20 });
+		for (i = 0; i < modes.length; i++) {
+            let mode = modes[i];
+            let label = modeLabels[mode];
+            if (!label) {
+               log('Unhandled option "%s" for lock-mode'.format(mode));
+               continue;
+            }
+
+            radio = new Gtk.RadioButton({ active: currentMode == mode,
+                                          label: label,
+                                          group: radio });
+            grid.add(radio);
+            radio.connect('toggled', Lang.bind(this, function(button) {
+                if (button.active)
+                    this._settings.set_string(SETTINGS_CHANGE_MODE, mode);
+            }));
+
+        }
 		
+		this.add(grid);
+		this.add(new Gtk.HSeparator());
 		//Change time
 		let gHBoxTimer = new Gtk.HBox({margin:10, spacing: 20, hexpand: true});
 		let gLabelTimer = new Gtk.Label({label: _("Interval (in minutes)"),halign: Gtk.Align.START});

@@ -16,8 +16,9 @@ const PopupMenu = imports.ui.popupMenu;
 const Gettext = imports.gettext.domain('randwall');
 const _ = Gettext.gettext;
 
-const SETTINGS_SAME_WALL = "same-wall";
 const SETTINGS_FOLDER_LIST = "folder-list";
+const SETTINGS_CHANGE_MODE = "change-mode";
+
 
 const CURRENT_DESK = 0;
 const CURRENT_LOCK = 1;
@@ -128,7 +129,8 @@ const NextWallControls = new Lang.Class({
 			style_class: "controls",
 		});
 		
-		if(!_settings.get_boolean(SETTINGS_SAME_WALL)) {
+		let currentMode = _settings.get_string(SETTINGS_CHANGE_MODE); 
+		if(currentMode == "different") {
 			this.box.set_style("padding-left: " + (Chooser.THUMB_WIDTH - 30) + "px;");
 		} else
 			this.box.set_style("padding-left: " + ((Chooser.THUMB_WIDTH / 2) - 36) + "px;"); //36 = button_size*2 + padding*2
@@ -164,42 +166,59 @@ const thumbPreviews = new Lang.Class({
 		let MainBox = new St.BoxLayout({vertical: false});
 		//Label + Icon Desktop Wallpaper Box
 		let desktopBox = new St.BoxLayout({vertical: true});
-		let textLabel = (!_settings.get_boolean(SETTINGS_SAME_WALL))?_("Desktop"):_("Desktop & Lockscreen");
-		desktopBox.add_child(new St.Label({text: textLabel, style_class:"label-thumb"}));
-		let filewall = wallUtils.getCurrentWall();
-		if(this._isNextThumbs) 
-			this.wallIcon = new Chooser.ThumbIcon(filewall,function(){
-				_indicator.close();
-				new Chooser.PictureChooser(NEXT_DESK,wallUtils).open();
-			});
-		else
-			this.wallIcon = new Chooser.ThumbIcon(filewall,function(){
-				_indicator.close();
-				new Chooser.PictureChooser(CURRENT_DESK,wallUtils).open();
-			});
-		desktopBox.add_actor(this.wallIcon.actor);
-		MainBox.add_child(desktopBox);
-		MainBox.add_child(new St.Icon({width:20}));
-		
-		if(!_settings.get_boolean(SETTINGS_SAME_WALL)) {
-			//Label + Lockscreen Wallpaper Box
-			let lockBox = new St.BoxLayout({vertical: true});
-			lockBox.add_child(new St.Label({text: _("Lockscreen"),style_class:"label-thumb"}));
-			let lockwall = wallUtils.getCurrentLockWall();
-			if(this._isNextThumbs) 
-				this.lockIcon = new Chooser.ThumbIcon(lockwall,function(){
-					_indicator.close();
-					new Chooser.PictureChooser(NEXT_LOCK,wallUtils).open();
-				});
-			else
-				this.lockIcon = new Chooser.ThumbIcon(lockwall,function(){
-					_indicator.close();
-					new Chooser.PictureChooser(CURRENT_LOCK,wallUtils).open();
-				});
-			lockBox.add_child(this.lockIcon.actor);
-			MainBox.add_child(lockBox);
+		let currentMode = _settings.get_string(SETTINGS_CHANGE_MODE); 
+		let textLabel,whoami;
+		/* 1st step: Label and identifier */
+		switch(currentMode){
+			case "different":
+			case "desktop":
+				textLabel = _("Desktop");
+				whoami = (this._isNextThumbs)?NEXT_DESK:CURRENT_DESK;
+				break;
+			case "same":
+				textLabel = _("Desktop & Lockscreen");
+				whoami = (this._isNextThumbs)?NEXT_DESK:CURRENT_DESK;
+				break;
+			case "lockscreen":
+				textLabel = _("Lockscreen");
+				whoami = (this._isNextThumbs)?NEXT_LOCK:CURRENT_LOCK;
+				break;
 		}
+		desktopBox.add_child(new St.Label({text: textLabel, style_class:"label-thumb"}));
+		/* End 1st step */
 		
+		/* 2nd step: Create wallIcon (only if not in lockscreen mode)*/
+		if(currentMode != "lockscreen") {
+			let filewall = wallUtils.getCurrentWall();
+			this.wallIcon = new Chooser.ThumbIcon(filewall,function(){
+					_indicator.close();
+					new Chooser.PictureChooser(whoami,wallUtils).open();
+			});
+			desktopBox.add_actor(this.wallIcon.actor);
+			MainBox.add_child(desktopBox);
+			MainBox.add_child(new St.Icon({width:20}));
+		}
+		/* End 2nd step */
+		
+		/* 3rd step: Create lockIcon (only in "different" and "lockscreen" mode*/
+		switch(currentMode) {
+			case "different":
+				//whoami was NEXT or CURRENT desktop on the 1st step. Now is NEXT or CURRENT lock 
+				whoami = (this._isNextThumbs)?NEXT_LOCK:CURRENT_LOCK;
+			case "lockscreen":
+				let lockBox = new St.BoxLayout({vertical: true});
+				lockBox.add_child(new St.Label({text: _("Lockscreen"),style_class:"label-thumb"}));
+				let lockwall = wallUtils.getCurrentLockWall();
+				this.lockIcon = new Chooser.ThumbIcon(lockwall,function(){
+					_indicator.close();
+					new Chooser.PictureChooser(whoami,wallUtils).open();
+				});
+				lockBox.add_child(this.lockIcon.actor);
+				MainBox.add_child(lockBox);
+				break;
+		}
+		/* End 3nd step*/
+		// Add everything to the mainbox
 		this.actor.add_actor(MainBox);
 	},
 	
@@ -312,7 +331,7 @@ function enable() {
 		this.MyTimer.start();
 	}
 	Main.panel.addToStatusArea('randwall',_indicator,1,'right');
-	_settings.connect('changed::' + SETTINGS_SAME_WALL,Lang.bind(this,applyChanges));
+	_settings.connect('changed::' + SETTINGS_CHANGE_MODE,Lang.bind(this,applyChanges));
 	_settings.connect('changed::' + SETTINGS_FOLDER_LIST,Lang.bind(this,applyChanges));
 }
 

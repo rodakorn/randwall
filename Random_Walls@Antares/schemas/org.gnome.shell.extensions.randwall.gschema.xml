@@ -1,15 +1,15 @@
 <schemalist gettext-domain="gnome-shell-extensions">
-  <schema id="org.gnome.shell.extensions.randwall" path="/org/gnome/shell/extensions/randwall/">
+ <enum id="org.gnome.shell.extensions.randwall.changeMode">
+    <value value="0" nick="different"/>
+    <value value="1" nick="same"/>
+    <value value="2" nick="desktop"/>
+    <value value="3" nick="lockscreen"/>
+ </enum>
+ <schema id="org.gnome.shell.extensions.randwall" path="/org/gnome/shell/extensions/randwall/">
     <key name="folder-list" type="as">
       <default>[]</default>
       <summary>User Image Folders</summary>
       <description>A list of folder paths, each containing images that will be used as wallpapers</description>
-    </key>
-
-    <key name="same-wall" type="b">
-      <default>false</default>
-      <summary>Use the same wallpaper for desktop and lockscreen</summary>
-      <description>Set to false if you want desktop and lockscreen wallpapers different</description>
     </key>
 
     <key name="change-time" type="i">
@@ -17,6 +17,12 @@
       <default>60</default>
       <summary>How often are the wallpapers changed (in minutes)</summary>
       <description>Set how often are the wallpapers changed (min 1 min. max 3000 min)</description>
+    </key>
+
+    <key name="change-mode" enum="org.gnome.shell.extensions.randwall.changeMode">
+      <default>'different'</default>
+      <summary>Change mode</summary>
+      <description>Decide how you want your wallpapers changed. Values are "different" for changing desktop and lockscreen randomly, "same" changes destkop and lockscreen using the same image on both, "desktop" for changing only desktop wallpaper and "lockscreen" for chaging only the lockscreen wallpaper.</description>
     </key>
 
   </schema>

@@ -2,7 +2,7 @@ const Gio = imports.gi.Gio;
 const Gdk = imports.gi.Gdk;
 const Lang = imports.lang;
 
-const SETTINGS_SAME_WALL = "same-wall";
+const SETTINGS_CHANGE_MODE = "change-mode";
 const SETTINGS_WALLS_URI = "picture-uri";
 const SETTINGS_LOCK_URI = "picture-uri";
 const SETTINGS_FOLDER_LIST = "folder-list";
@@ -141,13 +141,19 @@ const WallUtils = new Lang.Class({
 	},
 
 	changeWallpapers: function() {
-		//set nextWall as currentWall
-		this.setWall(this._nextWall);
-		//If same_wall is true we set _nextWall as lockWall
-		if(!this._settings.get_boolean(SETTINGS_SAME_WALL))
-			this.setLockWall(this._nextLock);
-		else
-			this.setLockWall(this._nextWall);
+		let currentMode = this._settings.get_string(SETTINGS_CHANGE_MODE); 
+		//DESKTOP CHANGE: Always except if we are in lockscreen mode
+		if(currentMode != "lockscreen")
+			this.setWall(this._nextWall);
+
+		//LOCKSCREEN CHANGE: If we are in "same" mode set the desktop wall
+		//					 If we are in "lockscreen" or "different" change randomly
+		if(currentMode != "desktop") {
+			if(currentMode == "same")
+				this.setLockWall(this._nextWall);
+			else
+				this.setLockWall(this._nextLock);
+		} 
 		//Get new nextWalls
 		this._nextWall = this.getRandomPicture();
 		this._nextLock = this.getRandomPicture();
@@ -156,24 +162,31 @@ const WallUtils = new Lang.Class({
 	},
 	
 	refreshThumbs: function() {
-		this._indicator.currentThumbs.setWallThumb();
-		this._indicator.nextThumbs.setWallThumb();
-		if(!this._settings.get_boolean(SETTINGS_SAME_WALL)) {
+		let currentMode = this._settings.get_string(SETTINGS_CHANGE_MODE);
+		//DESKTOP THUMBS UPDATE: only if not in lockscreen mode
+		if(currentMode != "lockscreen") {
+			this._indicator.currentThumbs.setWallThumb();
+			this._indicator.nextThumbs.setWallThumb();	
+		}
+		//LOCKSCREEN THUMBS: only if not in desktop or same mode
+		if(currentMode != "desktop" && currentMode != "same") {
 			this._indicator.currentThumbs.setLockThumb();
 			this._indicator.nextThumbs.setLockThumb();
 		}
 	},
 	
 	setNewNextAndRefresh: function() {
-		this._nextWall = this.getRandomPicture();
-		this._indicator.nextThumbs.setWallThumb();
+		let currentMode = this._settings.get_string(SETTINGS_CHANGE_MODE);
 		
-		if(!this._settings.get_boolean(SETTINGS_SAME_WALL)) {
-			this._nextLock = this.getRandomPicture();
+		this._nextWall = this.getRandomPicture();
+		this._nextLock = (currentMode=="same")?this._nextWall:this.getRandomPicture();
+		
+		if(currentMode != "lockscreen")
+			this._indicator.nextThumbs.setWallThumb();
+		
+		if(currentMode != "desktop" && currentMode != "same")
 			this._indicator.nextThumbs.setLockThumb();
-		} else {
-			this._nextLock = this._nextWall;
-		}
+		
 	},
 	
 	initValidDirs: function() {
