@@ -9,7 +9,7 @@ Features
 --------
 
 * Set the interval you want your backgrounds changed
-* Define if you want to use the same background for desktop and lockscreen
+* Define what you want to change: desktop, lockscreen, both using different images or both using the same image.
 * Backgrounds can be changed at any time using the "play" and "shuffle" buttons
 * You can select any image you want for your desktop or lockscreen, to be used now or in the next change.
 * Available in English or Spanish
@@ -29,7 +29,7 @@ When you have added some folders, if you click on the camera icon in the status 
 
 ![](https://github.com/rodakorn/randwall/blob/master/_screenshots/3.png)
 
-You can define if you want to use the same background on the desktop and lock screen in the settings dialog.
+You can define what you want to change: desktop only, lockscreen only, desktop and lockscreen using different images or both using the same image.
 
 ![](https://github.com/rodakorn/randwall/blob/master/_screenshots/4.png)
 
