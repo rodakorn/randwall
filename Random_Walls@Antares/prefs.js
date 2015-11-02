@@ -39,7 +39,8 @@ const RandWallSettingsWidget = new GObject.Class({
 
     _init : function(params) {
         this.parent(params);
-		this.set_orientation(Gtk.Orientation.VERTICAL);
+		this.set_size_request(-1,400);
+        this.set_orientation(Gtk.Orientation.VERTICAL);
 	
 		this._settings = Convenience.getSettings();
 		this._settings.connect('changed', Lang.bind(this, this._refresh));
