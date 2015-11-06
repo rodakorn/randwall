@@ -201,17 +201,18 @@ const thumbPreviews = new Lang.Class({
 		/* End 2nd step */
 		
 		/* 3rd step: Create lockIcon (only in "different" and "lockscreen" mode*/
+		let lockwhoami = whoami;
 		switch(currentMode) {
 			case "different":
 				//whoami was NEXT or CURRENT desktop on the 1st step. Now is NEXT or CURRENT lock 
-				whoami = (this._isNextThumbs)?NEXT_LOCK:CURRENT_LOCK;
+				lockwhoami = (this._isNextThumbs)?NEXT_LOCK:CURRENT_LOCK;
 			case "lockscreen":
 				let lockBox = new St.BoxLayout({vertical: true});
 				lockBox.add_child(new St.Label({text: _("Lockscreen"),style_class:"label-thumb"}));
 				let lockwall = wallUtils.getCurrentLockWall();
 				this.lockIcon = new Chooser.ThumbIcon(lockwall,function(){
 					_indicator.close();
-					new Chooser.PictureChooser(whoami,wallUtils).open();
+					new Chooser.PictureChooser(lockwhoami,wallUtils).open();
 				});
 				lockBox.add_child(this.lockIcon.actor);
 				MainBox.add_child(lockBox);
