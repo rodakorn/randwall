@@ -295,6 +295,7 @@ const PictureChooser = new Lang.Class ({
     	
     	let table_row = 0;
     	let table_col = 0;
+    	let table;
     	for(i=0;i<dirs.length;i++) {
 			let dir = Gio.File.new_for_path(dirs[i]);
 			
@@ -306,7 +307,7 @@ const PictureChooser = new Lang.Class ({
 		        fileEnum = null;
 		    }
 		    
-		    let info, child,table;
+		    let info, child;
 	        while((info = fileEnum.next_file(null)) != null) {
 	        	let child = fileEnum.get_child(info);
 	        	//Check if is a regular file

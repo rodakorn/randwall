@@ -189,33 +189,44 @@ const WallUtils = new Lang.Class({
 		
 	},
 	
+	checkFolder: function(dirpath,validDirs) {
+		let dir = Gio.File.new_for_path(dirpath);
+		
+		let fileEnum;
+	 	try {
+	 		fileEnum = dir.enumerate_children('standard::name,standard::type,standard::content-type',
+		                                          Gio.FileQueryInfoFlags.NONE, null);
+	    } catch (e) {
+	        fileEnum = null;
+	    }
+	    let info, child;
+        while((info = fileEnum.next_file(null)) != null) {
+        	let child = fileEnum.get_child(info);
+        	//Check if is a regular file
+        	if (info.get_file_type() == Gio.FileType.REGULAR) {
+        		//Check if file is a valid image
+        		if(info.get_content_type().match(/^image\//i)) {
+        			//Be careful with loops
+        			if(validDirs.indexOf(dirpath) == -1)
+        				validDirs.push(dirpath);
+        		}
+        	} else {
+        		if(info.get_file_type() == Gio.FileType.DIRECTORY)
+        			this.checkFolder(child.get_parse_name(),validDirs);
+        	}
+        }
+        
+        return validDirs;
+        
+	},
+	
 	initValidDirs: function() {
 		let validDirs = [];
 		let listDirs = this._settings.get_strv(SETTINGS_FOLDER_LIST);
 		if(listDirs.length > 0) {
 			for(i=0;i<listDirs.length;i++) {
-				let dir = Gio.File.new_for_path(listDirs[i]);
-				
-				let fileEnum;
-			 	try {
-			 		fileEnum = dir.enumerate_children('standard::name,standard::type,standard::content-type',
-				                                          Gio.FileQueryInfoFlags.NONE, null);
-			    } catch (e) {
-			        fileEnum = null;
-			    }
-			    let info, child;
-			    let ok=false;
-		        while(((info = fileEnum.next_file(null)) != null) && !ok ) {
-		        	let child = fileEnum.get_child(info);
-		        	//Check if is a regular file
-		        	if (info.get_file_type() == Gio.FileType.REGULAR) 
-		        		//Check if file is a valid image
-		        		if(info.get_content_type().match(/^image\//i)) {
-		        			ok=true;
-		        			validDirs.push(listDirs[i]);
-		        		}
-		        }
-		        
+				let dirpath = listDirs[i];
+				this.checkFolder(dirpath,validDirs);
 	        }
 			
 			if( validDirs.length > 0)
