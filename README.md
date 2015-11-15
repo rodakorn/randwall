@@ -12,7 +12,7 @@ Features
 * Define what you want to change: desktop, lockscreen, both using different images or both using the same image.
 * Backgrounds can be changed at any time using the "play" and "shuffle" buttons
 * You can select any image you want for your desktop or lockscreen, to be used now or in the next change.
-* Available in English or Spanish
+* Available in English, Spanish, and French
 
 Settings
 --------
