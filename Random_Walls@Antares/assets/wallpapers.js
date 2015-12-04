@@ -6,6 +6,7 @@ const SETTINGS_CHANGE_MODE = "change-mode";
 const SETTINGS_WALLS_URI = "picture-uri";
 const SETTINGS_LOCK_URI = "picture-uri";
 const SETTINGS_FOLDER_LIST = "folder-list";
+const SETTINGS_BACKGROUND_MODE = "picture-options";
 
 const WallUtils = new Lang.Class({
     Name: "WallUtils",
@@ -248,5 +249,14 @@ const WallUtils = new Lang.Class({
 });
 
 const getScreenAspectRatio = function() {
-	return Gdk.Screen.height()/Gdk.Screen.width();
+	let background_setting = new Gio.Settings({schema: "org.gnome.desktop.background"});
+	let background_mode = background_setting.get_string(SETTINGS_BACKGROUND_MODE);
+	if(background_mode == "spanned")
+		return Gdk.Screen.height()/Gdk.Screen.width();
+	else {
+		let screen = Gdk.Screen.get_default();
+		let monitor = screen.get_monitor_geometry(screen.get_primary_monitor());
+		return monitor.height / monitor.width;
+	}
+		
 };
