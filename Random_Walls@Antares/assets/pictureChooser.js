@@ -37,7 +37,8 @@ const ThumbIcon = new Lang.Class({
         });
 		
 		this.actor = new St.Button({
-			child: this._icon
+			child: this._icon,
+			x_expand: true
 		});
 		
 		this._icon.set_height(THUMB_WIDTH*Wallpapers.getScreenAspectRatio());
@@ -226,7 +227,7 @@ const PictureChooser = new Lang.Class ({
     	let table;
     	for(i=0;i<images.length;i++) {
     		if(table_col == 0) 
-				table = new St.Table({x_expand:true, homogeneous: false, style_class: "chooser-row-box-table"});
+				table = new St.BoxLayout({x_expand:true, vertical: true, style_class: "chooser-row-box-table"});
     		
     		//create a icon with the current image
 			let imagepath = images[i];
@@ -317,7 +318,7 @@ const PictureChooser = new Lang.Class ({
 	        			let imagepath = child.get_parse_name();
 	        			//For every row create a table
 	        			if(table_col == 0) 
-	        				table = new St.Table({x_expand:true, homogeneous: false, style_class: "chooser-row-box-table"});
+	        				table = new St.BoxLayout({x_expand:true, vertical: false, style_class: "chooser-row-box-table"});
 	        			//create a icon with the current image
 	        			let image = new ThumbIcon(this._wallUtils.getGiconFromPath(imagepath),null);
 	        			//set the callback
