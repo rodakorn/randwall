@@ -62,7 +62,7 @@ const RandWallSettingsWidget = new GObject.Class({
 		let currentMode = this._settings.get_string(SETTINGS_CHANGE_MODE);
 		let modes = range.deep_unpack()[1].deep_unpack();
 		let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,row_spacing: 6,column_spacing: 6,margin_top: 6, margin_left: 20 });
-		for (i = 0; i < modes.length; i++) {
+		for (var i = 0; i < modes.length; i++) {
             let mode = modes[i];
             let label = modeLabels[mode];
             if (!label) {
