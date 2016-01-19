@@ -181,7 +181,7 @@ const PictureChooser = new Lang.Class ({
     	let paths = this._wallUtils.getDirs();
 	
 		let results = [];
-		for(i=0;i<paths.length;i++) {
+		for(var i=0;i<paths.length;i++) {
 			let path = paths[i];
 			let file = Gio.File.new_for_path(path);
 			let fileEnum = file.enumerate_children('standard::name',Gio.FileQueryInfoFlags.NONE, null);
@@ -225,7 +225,7 @@ const PictureChooser = new Lang.Class ({
     	let table_row = 0;
     	let table_col = 0;
     	let table;
-    	for(i=0;i<images.length;i++) {
+    	for(var i=0;i<images.length;i++) {
     		if(table_col == 0) 
 				table = new St.BoxLayout({x_expand:true, vertical: true, style_class: "chooser-row-box-table"});
     		
@@ -297,7 +297,7 @@ const PictureChooser = new Lang.Class ({
     	let table_row = 0;
     	let table_col = 0;
     	let table;
-    	for(i=0;i<dirs.length;i++) {
+    	for(var i=0;i<dirs.length;i++) {
 			let dir = Gio.File.new_for_path(dirs[i]);
 			
 			let fileEnum;
