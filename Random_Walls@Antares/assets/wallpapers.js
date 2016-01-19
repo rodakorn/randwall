@@ -36,7 +36,7 @@ const WallUtils = new Lang.Class({
     
     getNumValidImages: function() {
 		let numFiles = 0;
-    	for(i=0;i<this._dirs.length;i++) {
+    	for(var i=0;i<this._dirs.length;i++) {
 			let dir = Gio.File.new_for_path(this._dirs[i]);
 			
 			let fileEnum;
@@ -225,7 +225,7 @@ const WallUtils = new Lang.Class({
 		let validDirs = [];
 		let listDirs = this._settings.get_strv(SETTINGS_FOLDER_LIST);
 		if(listDirs.length > 0) {
-			for(i=0;i<listDirs.length;i++) {
+			for(var i=0;i<listDirs.length;i++) {
 				let dirpath = listDirs[i];
 				this.checkFolder(dirpath,validDirs);
 	        }
