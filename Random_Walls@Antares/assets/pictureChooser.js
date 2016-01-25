@@ -227,7 +227,7 @@ const PictureChooser = new Lang.Class ({
     	let table;
     	for(var i=0;i<images.length;i++) {
     		if(table_col == 0) 
-				table = new St.BoxLayout({x_expand:true, vertical: true, style_class: "chooser-row-box-table"});
+				table = new St.BoxLayout({x_expand:true, style_class: "chooser-row-box-table"});
     		
     		//create a icon with the current image
 			let imagepath = images[i];
