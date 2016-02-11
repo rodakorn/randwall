@@ -18,6 +18,12 @@
       <summary>How often are the wallpapers changed (in minutes)</summary>
       <description>Set how often are the wallpapers changed (min 1 min. max 3000 min)</description>
     </key>
+    
+    <key name="hide-icon" type="b">
+    	<default>false</default>
+    	<summary>Hide Icon from topbar</summary>
+    	<description>Hide Icon from topbar</description>
+ 	 </key>
 
     <key name="change-mode" enum="org.gnome.shell.extensions.randwall.changeMode">
       <default>'different'</default>

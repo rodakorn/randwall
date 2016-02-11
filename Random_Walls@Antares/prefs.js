@@ -19,8 +19,9 @@ const Columns = {
 const SETTINGS_FOLDER_LIST = 'folder-list';
 const SETTINGS_CHANGE_TIME = "change-time";
 const SETTINGS_CHANGE_MODE = "change-mode";
+const SETTINGS_HIDE_ICON = "hide-icon";
 
-const SettingsWidget = new GObject.Class({
+/*const SettingsWidget = new GObject.Class({
 	Name: "SettingsWidget",
 	Extends: Gtk.Widget,
 	
@@ -30,7 +31,7 @@ const SettingsWidget = new GObject.Class({
 		this.add(this.grid);
 	}
 	
-});
+});*/
 
 const RandWallSettingsWidget = new GObject.Class({
     Name: 'RandWall.prefs.RandWallSettingsWidget',
@@ -39,7 +40,7 @@ const RandWallSettingsWidget = new GObject.Class({
 
     _init : function(params) {
         this.parent(params);
-		this.set_size_request(-1,400);
+		this.set_size_request(-1,500);
         this.set_orientation(Gtk.Orientation.VERTICAL);
 	
 		this._settings = Convenience.getSettings();
@@ -83,6 +84,16 @@ const RandWallSettingsWidget = new GObject.Class({
 		
 		this.add(grid);
 		this.add(new Gtk.HSeparator());
+		
+		//Hide Icon
+		let gHBoxHideIcon = new Gtk.HBox({margin:10, spacing: 20, hexpand: true});
+		gHBoxHideIcon.add(new Gtk.Label({label: _("Hide Icon"),halign: Gtk.Align.START, margin: 10}));
+		let iconSwitch = new Gtk.Switch({halign: Gtk.Align.END});
+		gHBoxHideIcon.add(iconSwitch);
+		this.add(gHBoxHideIcon);
+		this.add(new Gtk.HSeparator());
+		this._settings.bind(SETTINGS_HIDE_ICON, iconSwitch, 'active', Gio.SettingsBindFlags.DEFAULT);
+		
 		//Change time
 		let gHBoxTimer = new Gtk.HBox({margin:10, spacing: 20, hexpand: true});
 		let gLabelTimer = new Gtk.Label({label: _("Interval (in minutes)"),halign: Gtk.Align.START});
@@ -91,8 +102,7 @@ const RandWallSettingsWidget = new GObject.Class({
 		gHBoxTimer.add(this._interval);
 		this._interval.connect('changed',Lang.bind(this,this._changeInterval));
 		this.add(gHBoxTimer);
-		
-		
+			
 		//Scroll list
 	    let scrolled = new Gtk.ScrolledWindow({ shadow_type: Gtk.ShadowType.IN});
 	    scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
@@ -214,7 +224,7 @@ function init() {
 
 function buildPrefsWidget() {
 	let widget = new RandWallSettingsWidget({ margin: 12 });
-    widget.show_all();
+	widget.show_all();
 
-    return widget;
+	return widget;
 }

@@ -18,6 +18,7 @@ const _ = Gettext.gettext;
 
 const SETTINGS_FOLDER_LIST = "folder-list";
 const SETTINGS_CHANGE_MODE = "change-mode";
+const SETTINGS_HIDE_ICON = "hide-icon";
 
 
 const CURRENT_DESK = 0;
@@ -331,7 +332,10 @@ function enable() {
 		wallUtils.changeWallpapers();
 		this.MyTimer.start();
 	}
-	Main.panel.addToStatusArea('randwall',_indicator,1,'right');
+	let hideIcon = _settings.get_boolean(SETTINGS_HIDE_ICON);
+	if(!hideIcon)
+		Main.panel.addToStatusArea('randwall',_indicator,1,'right');
+	_settings.connect('changed::' + SETTINGS_HIDE_ICON,Lang.bind(this,applyChanges));
 	_settings.connect('changed::' + SETTINGS_CHANGE_MODE,Lang.bind(this,applyChanges));
 	_settings.connect('changed::' + SETTINGS_FOLDER_LIST,Lang.bind(this,applyChanges));
 }
@@ -344,7 +348,9 @@ function applyChanges() {
 	wallUtils = new Wallpapers.WallUtils(_settings);
 	_indicator = new RandWallMenu(_settings);
 	wallUtils.setIndicator(_indicator);
-	Main.panel.addToStatusArea('randwall',_indicator,1,'right');
+	let hideIcon = _settings.get_boolean(SETTINGS_HIDE_ICON);
+	if(!hideIcon)
+		Main.panel.addToStatusArea('randwall',_indicator,1,'right');
 	wallUtils.setNewNextAndRefresh();
 }
 
