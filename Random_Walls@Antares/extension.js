@@ -310,7 +310,7 @@ const RandWallMenu = new Lang.Class({
 
 function init() {
 	_settings=Convenience.getSettings();
-	Convenience.initTranslations();
+	Convenience.initTranslations();    
     wallUtils = new Wallpapers.WallUtils(_settings);
     if(!wallUtils.isEmpty()) {
     	this.MyTimer = new Interval.MyTimer();
@@ -328,7 +328,7 @@ let _settings;
 function enable() {
 	_indicator = new RandWallMenu(_settings);
 	wallUtils.setIndicator(_indicator);
-	if(!wallUtils.isEmpty()) {
+	if(!wallUtils.isEmpty() && this.MyTimer) {
 		wallUtils.changeWallpapers();
 		this.MyTimer.start();
 	}
