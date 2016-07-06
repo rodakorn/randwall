@@ -64,13 +64,13 @@ const WallUtils = new Lang.Class({
 
 	getCurrentWall: function() {
 		let background_setting = new Gio.Settings({schema: 'org.gnome.desktop.background'});
-		let pathFromURI = background_setting.get_string(SETTINGS_WALLS_URI).replace(/^file:\/\//g,'');
+		let pathFromURI = decodeURIComponent(background_setting.get_string(SETTINGS_WALLS_URI)).replace(/^file:\/\//g,'');
 		return new Gio.FileIcon({file: Gio.File.new_for_path(pathFromURI)});
 	},
 
 	getCurrentLockWall: function() {
 		let lockbackground_setting = new Gio.Settings({schema: 'org.gnome.desktop.screensaver'});
-		let pathFromURI = lockbackground_setting.get_string(SETTINGS_LOCK_URI).replace(/^file:\/\//g,'');
+		let pathFromURI = decodeURIComponent(lockbackground_setting.get_string(SETTINGS_LOCK_URI)).replace(/^file:\/\//g,'');
 		return new Gio.FileIcon({file: Gio.File.new_for_path(pathFromURI)});
 	},
 
@@ -88,12 +88,14 @@ const WallUtils = new Lang.Class({
 
 	setWall: function(picture) {
 		let background_setting = new Gio.Settings({schema: 'org.gnome.desktop.background'});
-		background_setting.set_string(SETTINGS_WALLS_URI,'file://' + picture);
+		background_setting.set_string(SETTINGS_WALLS_URI,
+									  'file://' + picture.split('/').map(c => encodeURIComponent(c)).join('/'));
 	},
 
 	setLockWall: function(picture) {
 		let lockbackground_setting = new Gio.Settings({schema: 'org.gnome.desktop.screensaver'});
-		lockbackground_setting.set_string(SETTINGS_LOCK_URI,'file://' + picture);
+		lockbackground_setting.set_string(SETTINGS_WALLS_URI,
+										  'file://' + picture.split('/').map(c => encodeURIComponent(c)).join('/'));
 	},
 
 	setNextLockWall: function(picture) {
