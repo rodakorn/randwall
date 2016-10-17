@@ -258,7 +258,8 @@ const RandWallMenu = new Lang.Class({
 	_init: function() {
 		this.parent(0.0,"randwall");
 		let hbox = new St.BoxLayout({ style_class: 'panel-status-menu-box' });
-		let icon = new St.Icon({style_class: 'randwall-icon'});
+		let icon = new St.Icon({style_class: 'system-status-icon randwall-icon',
+	                            icon_name: 'randwall-symbolic'});
 		hbox.add_child(icon);
 		hbox.add_child(PopupMenu.arrowIcon(St.Side.BOTTOM));
         this.actor.add_actor(hbox);
@@ -308,7 +309,7 @@ const RandWallMenu = new Lang.Class({
 });
 
 
-function init() {
+function init(metadata) {
 	_settings=Convenience.getSettings();
 	Convenience.initTranslations();    
     wallUtils = new Wallpapers.WallUtils(_settings);
@@ -320,6 +321,8 @@ function init() {
     		return true;
     	});
     }
+    let theme = imports.gi.Gtk.IconTheme.get_default();
+    theme.append_search_path(metadata.path + "/icons");
 }
 
 let _indicator;
