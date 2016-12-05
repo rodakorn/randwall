@@ -1,0 +1,90 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-05 17:23+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: extension.js:176
+msgid "Desktop"
+msgstr ""
+
+#: extension.js:180
+msgid "Desktop & Lockscreen"
+msgstr ""
+
+#: extension.js:184 extension.js:212
+msgid "Lockscreen"
+msgstr ""
+
+#: extension.js:269
+msgid "CURRENT"
+msgstr ""
+
+#: extension.js:276
+msgid "NEXT"
+msgstr ""
+
+#: extension.js:286
+msgid "No images found!"
+msgstr ""
+
+#: extension.js:287
+msgid "Please, add some folders with images"
+msgstr ""
+
+#: prefs.js:54
+msgid "Change mode"
+msgstr ""
+
+#: prefs.js:56
+msgid "Change both desktop and lockscreen"
+msgstr ""
+
+#: prefs.js:57
+msgid "Change desktop and lockscreen using the same image"
+msgstr ""
+
+#: prefs.js:58
+msgid "Change only desktop wallpaper"
+msgstr ""
+
+#: prefs.js:59
+msgid "Change only Lockscreen wallpaper"
+msgstr ""
+
+#: prefs.js:90
+msgid "Hide Icon"
+msgstr ""
+
+#: prefs.js:99
+msgid "Interval (in minutes)"
+msgstr ""
+
+#: prefs.js:115
+msgid "Image Folders"
+msgstr ""
+
+#: prefs.js:129
+msgid "Add Folder"
+msgstr ""
+
+#: prefs.js:155
+msgid "Select a folder"
+msgstr ""
+
+#: assets/pictureChooser.js:159
+msgid "Search image"
+msgstr ""
