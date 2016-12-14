@@ -49,12 +49,14 @@ const WallUtils = new Lang.Class({
 			}
 
 			let info, child;
-			while ((info = fileEnum.next_file(null)) != null) {
-				let child = fileEnum.get_child(info);
-				//Check if is a regular file, and is an image
-				if (info.get_file_type() == Gio.FileType.REGULAR &&
-				    /.*\.[jpg|jpeg|png]/i.test(child.get_parse_name())) {
-					numFiles++;
+			if (fileEnum !== null) {
+				while ((info = fileEnum.next_file(null)) != null) {
+					let child = fileEnum.get_child(info);
+					//Check if is a regular file, and is an image
+					if (info.get_file_type() == Gio.FileType.REGULAR &&
+							/.*\.[jpg|jpeg|png]/i.test(child.get_parse_name())) {
+						numFiles++;
+					}
 				}
 			}
 		}
@@ -123,7 +125,7 @@ const WallUtils = new Lang.Class({
 		}
 		//Make list of valid files
 		let validFiles = [];
-		if (fileEnum != null) {
+		if (fileEnum !== null) {
 			let info, child;
 			while ((info = fileEnum.next_file(null)) != null) {
 				let child = fileEnum.get_child(info);
@@ -203,17 +205,19 @@ const WallUtils = new Lang.Class({
 		} catch (e) {
 			fileEnum = null;
 		}
-		let info, child;
-		while ((info = fileEnum.next_file(null)) != null) {
-			let child = fileEnum.get_child(info);
-			//Check if is a regular file
-			if (info.get_file_type() == Gio.FileType.REGULAR) {
-				//Check if file is a valid image, and be careful with loops
-				if (info.get_content_type().match(/^image\//i) && validDirs.indexOf(dirpath) == -1) {
-					validDirs.push(dirpath);
+		if (fileEnum !== null) {
+			let info, child;
+			while ((info = fileEnum.next_file(null)) != null) {
+				let child = fileEnum.get_child(info);
+				//Check if is a regular file
+				if (info.get_file_type() == Gio.FileType.REGULAR) {
+					//Check if file is a valid image, and be careful with loops
+					if (info.get_content_type().match(/^image\//i) && validDirs.indexOf(dirpath) == -1) {
+						validDirs.push(dirpath);
+					}
+				} else if (info.get_file_type() == Gio.FileType.DIRECTORY) {
+					this.checkFolder(child.get_parse_name(),validDirs);
 				}
-			} else if (info.get_file_type() == Gio.FileType.DIRECTORY) {
-				this.checkFolder(child.get_parse_name(),validDirs);
 			}
 		}
 
