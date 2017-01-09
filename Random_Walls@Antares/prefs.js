@@ -98,7 +98,7 @@ const RandWallSettingsWidget = new GObject.Class({
 		let gHBoxTimer = new Gtk.HBox({margin:10, spacing: 20, hexpand: true});
 		let gLabelTimer = new Gtk.Label({label: _("Interval (in minutes)"),halign: Gtk.Align.START});
 		gHBoxTimer.add(gLabelTimer);
-		this._interval =  Gtk.SpinButton.new_with_range (1, 3000, 1);
+		this._interval =  Gtk.SpinButton.new_with_range (0, 3000, 1);
 		gHBoxTimer.add(this._interval);
 		this._interval.connect('changed',Lang.bind(this,this._changeInterval));
 		this.add(gHBoxTimer);

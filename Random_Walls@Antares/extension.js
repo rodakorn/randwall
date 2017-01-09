@@ -19,7 +19,7 @@ const _ = Gettext.gettext;
 const SETTINGS_FOLDER_LIST = "folder-list";
 const SETTINGS_CHANGE_MODE = "change-mode";
 const SETTINGS_HIDE_ICON = "hide-icon";
-
+const SETTINGS_TIMEOUT = "change-time";
 
 const CURRENT_DESK = 0;
 const CURRENT_LOCK = 1;
@@ -316,9 +316,13 @@ function init(metadata) {
     if(!wallUtils.isEmpty()) {
     	this.MyTimer = new Interval.MyTimer();
     	this.MyTimer.setCallback(function() {
-    		wallUtils.changeWallpapers();
-    	//	WARNING! Without the return true the timer will stop after the first run 
-    		return true;
+			//	WARNING! Without the return true the timer will stop after the first run 
+    		if(_settings.get_int(SETTINGS_TIMEOUT) != 0) {
+    			wallUtils.changeWallpapers();
+    			return true;
+    		}
+			else
+				return false;
     	});
     }
     let theme = imports.gi.Gtk.IconTheme.get_default();
@@ -331,7 +335,7 @@ let _settings;
 function enable() {
 	_indicator = new RandWallMenu(_settings);
 	wallUtils.setIndicator(_indicator);
-	if(!wallUtils.isEmpty() && this.MyTimer) {
+	if(!wallUtils.isEmpty() && this.MyTimer && _settings.get_int(SETTINGS_TIMEOUT) != 0) {
 		wallUtils.changeWallpapers();
 		this.MyTimer.start();
 	}
