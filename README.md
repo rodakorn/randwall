@@ -12,7 +12,7 @@ Features
 * Define what you want to change: desktop, lockscreen, both using different images or both using the same image.
 * Backgrounds can be changed at any time using the "play" and "shuffle" buttons
 * You can select any image you want for your desktop or lockscreen, to be used now or in the next change.
-* Available in English, Spanish, German, French (thanks to [Poum](https://github.com/poum) for this translation), Brazilian Portuguese (thanks to [Fábio Nogueira](https://github.com/frnogueira)), Russian (thanks to [mrEDitor](https://github.com/mreditor)), and simplified chinese (thanks to [Dingzhong Chen](https://github.com/wsxy162)).
+* Available in English, Spanish, German, French (thanks to [Poum](https://github.com/poum) for this translation), Brazilian Portuguese (thanks to [Fábio Nogueira](https://github.com/frnogueira)), Russian (thanks to [mrEDitor](https://github.com/mreditor)), simplified chinese (thanks to [Dingzhong Chen](https://github.com/wsxy162)) and Ukranian (thanks to [alex-volga](https://github.com/alex-volga)).
 
 Settings
 --------
