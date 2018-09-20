@@ -8,7 +8,7 @@ const SETTINGS_LOCK_URI = 'picture-uri';
 const SETTINGS_FOLDER_LIST = 'folder-list';
 const SETTINGS_BACKGROUND_MODE = 'picture-options';
 
-const WallUtils = new Lang.Class({
+var WallUtils = new Lang.Class({
 	Name: 'WallUtils',
 
 	_settings: null,
@@ -248,7 +248,7 @@ const WallUtils = new Lang.Class({
 
 });
 
-const getScreenAspectRatio = function() {
+var getScreenAspectRatio = function() {
 	let background_setting = new Gio.Settings({schema: 'org.gnome.desktop.background'});
 	let background_mode = background_setting.get_string(SETTINGS_BACKGROUND_MODE);
 	if (background_mode == 'spanned') {

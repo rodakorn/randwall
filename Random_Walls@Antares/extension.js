@@ -29,7 +29,7 @@ const NEXT_LOCK = 3;
 
 let metadata = Me.metadata;
 let settings;
-let MyTimer;
+var MyTimer;
 let wallUtils;
 
 const LabelWidget = new Lang.Class({

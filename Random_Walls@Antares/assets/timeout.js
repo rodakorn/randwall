@@ -6,7 +6,7 @@ const Convenience = Me.imports.convenience;
 //SCHEMA KEYS
 const SETTINGS_TIMEOUT = "change-time";
 
-const MyTimer = new Lang.Class({
+var MyTimer = new Lang.Class({
     Name: "MyTimer",
 
     _settings: {},
