@@ -17,12 +17,12 @@ const CURRENT_LOCK = 1;
 const NEXT_DESK = 2;
 const NEXT_LOCK = 3;
 
-const THUMB_WIDTH = 200; //Change on stylesheet.css too!!
+var THUMB_WIDTH = 200; //Change on stylesheet.css too!!
 const NUM_COLS_TABLE = 4;
 
 let _settings=Convenience.getSettings();
 
-const ThumbIcon = new Lang.Class({
+var ThumbIcon = new Lang.Class({
 	Name: 'ThumbIcon',
 	actor: {},
 	_icon: {},
