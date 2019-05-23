@@ -251,9 +251,10 @@ const RandWallMenu = GObject.registerClass(
       // this.menu = this.mainButton.menu;
       // this.actor = this.mainButton.actor;
       let hbox = new St.BoxLayout({style_class: 'panel-status-menu-box'});
+      let gicon = imports.gi.Gio.icon_new_for_string(Me.path + "/icons/randwall-symbolic.symbolic.png");
       let icon = new St.Icon({
         style_class: 'system-status-icon randwall-icon',
-        icon_name: 'randwall-symbolic'
+        gicon: gicon
       });
       hbox.add_child(icon);
       hbox.add_child(PopupMenu.arrowIcon(St.Side.BOTTOM));
