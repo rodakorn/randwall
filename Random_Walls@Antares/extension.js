@@ -7,7 +7,7 @@ const Wallpapers = Me.imports.assets.wallpapers;
 const Chooser = Me.imports.assets.pictureChooser;
 const MyConfig = Me.imports.prefs;
 const Lang = imports.lang;
-const Tweener = imports.ui.tweener;
+const Tweener = imports.tweener.tweener;
 
 
 const PanelMenu = imports.ui.panelMenu;
@@ -31,118 +31,128 @@ let settings;
 var MyTimer;
 let wallUtils;
 
-const LabelWidget = class LabelWidget extends PopupMenu.PopupBaseMenuItem {
-  constructor(text, type) {
-    super({
-      reactive: false
-    });
+const LabelWidget = GObject.registerClass(
+  class LabelWidget extends PopupMenu.PopupBaseMenuItem {
+    _init(text, type) {
+      super._init({
+        reactive: false
+      });
 
-    this._label = new St.Label({
-      text: text,
-      style_class: "labels"
-    });
-    //Add type to stylesheet.css if you want different styles
-    this._label.add_style_class_name(type);
+      this._label = new St.Label({
+        text: text,
+        style_class: "labels"
+      });
+      //Add type to stylesheet.css if you want different styles
+      this._label.add_style_class_name(type);
 
-    this.actor.add_child(this._label);
-  }
-
-  setText(text) {
-    this._label.text = text;
-  }
-};
-
-
-const ControlButton = class ControlButton {
-  constructor(icon, callback) {
-    this.icon = new St.Icon({
-      icon_name: icon + "-symbolic", // Get the symbol-icons.
-      icon_size: 20
-    });
-
-    this.actor = new St.Button({
-      style_class: 'notification-icon-button control-button', // buttons styled like in Rhythmbox-notifications
-      child: this.icon
-    });
-    this.icon.set_style('padding: 0px');
-    this.actor.set_style('padding: 8px'); // Put less space between buttons
-
-    if (callback != undefined || callback != null) {
-      this.actor.connect('clicked', callback);
+      this.add_child(this._label);
     }
-  }
 
-  setIcon(icon) {
-    this.icon.icon_name = icon + '-symbolic';
-  }
-};
-
-const ConfigControls = class ConfigControls extends PopupMenu.PopupBaseMenuItem {
-
-  constructor() {
-    super({
-      reactive: false
-    });
-
-    this.box = new St.BoxLayout({
-      style_class: "controls",
-    });
-
-    this.actor.add(this.box, {expand: true});
-    this.box.add_actor(new ControlButton("list-add", this._openConfigWidget).actor);
-
-  }
-
-  _openConfigWidget() {
-    let _appSys = Shell.AppSystem.get_default();
-    let _gsmPrefs = _appSys.lookup_app('gnome-shell-extension-prefs.desktop');
-    if (_gsmPrefs.get_state() == _gsmPrefs.SHELL_APP_STATE_RUNNING) {
-      _gsmPrefs.activate();
-    } else {
-      let info = _gsmPrefs.get_app_info();
-      let timestamp = global.display.get_current_time_roundtrip();
-      info.launch_uris([metadata.uuid], global.create_app_launch_context(timestamp, -1));
+    setText(text) {
+      this._label.text = text;
     }
-  }
-};
+  });
 
-const NextWallControls = class NextWallControls extends PopupMenu.PopupBaseMenuItem {
-  constructor() {
 
-    super({
-      reactive: false
-    });
+const ControlButton = GObject.registerClass(
+  class ControlButton extends St.Button {
+    _init(icon, callback) {
+      this.icon = new St.Icon({
+        icon_name: icon + "-symbolic", // Get the symbol-icons.
+        icon_size: 20
+      });
 
-    this.box = new St.BoxLayout({
-      style_class: "controls",
-    });
+      super._init({
+        style_class: 'notification-icon-button control-button', // buttons styled like in Rhythmbox-notifications
+        child: this.icon
+      })
 
-    let currentMode = _settings.get_string(SETTINGS_CHANGE_MODE);
-    if (currentMode == "different") {
-      this.box.set_style("padding-left: " + (Chooser.THUMB_WIDTH - 30) + "px;");
-    } else
-      this.box.set_style("padding-left: " + ((Chooser.THUMB_WIDTH / 2) - 36) + "px;"); //36 = button_size*2 + padding*2
+      this.icon.set_style('padding: 0px');
+      this.set_style('padding: 8px'); // Put less space between buttons
 
-    this.actor.add(this.box, {expand: true});
-    this.box.add_actor(new ControlButton("media-playback-start", this._changeWalls).actor);
-    this.box.add_actor(new ControlButton("media-playlist-shuffle", this._newNextWalls).actor);
+      if (callback != undefined || callback != null) {
+        this.connect('clicked', callback);
+      }
+    }
 
-  }
+    setIcon(icon) {
+      this.icon.icon_name = icon + '-symbolic';
+    }
+  });
 
-  _changeWalls() {
-    if (wallUtils != null)
-      wallUtils.changeWallpapers();
-  }
+const ConfigControls = GObject.registerClass(
+  class ConfigControls extends PopupMenu.PopupBaseMenuItem {
+    _init() {
+      super._init({
+        reactive: false
+      });
 
-  _newNextWalls() {
-    if (wallUtils != null)
-      wallUtils.setNewNextAndRefresh();
-  }
-};
+      this.box = new St.BoxLayout({
+        x_expand: "true",
+        y_expand: "true",
+        style_class: "controls",
+      });
 
-const thumbPreviews = class thumbPreviews extends PopupMenu.PopupBaseMenuItem {
-  constructor(isNextThumbs) {
-    super();
+      this.box.expand = true;
+
+      this.add_child(this.box);
+      this.box.add_actor(new ControlButton("list-add", this._openConfigWidget));
+
+    }
+
+    _openConfigWidget() {
+      let _appSys = Shell.AppSystem.get_default();
+      let _gsmPrefs = _appSys.lookup_app("org.gnome.Extensions.desktop");
+      if (_gsmPrefs.get_state() == _gsmPrefs.SHELL_APP_STATE_RUNNING) {
+        _gsmPrefs.activate();
+      } else {
+        let info = _gsmPrefs.get_app_info();
+        let timestamp = global.display.get_current_time_roundtrip();
+        info.launch_uris([metadata.uuid], global.create_app_launch_context(timestamp, -1));
+      }
+    }
+  });
+
+const NextWallControls = GObject.registerClass(
+  class NextWallControls extends PopupMenu.PopupBaseMenuItem {
+    _init() {
+      super._init({
+        reactive: false
+      });
+
+      this.box = new St.BoxLayout({
+        x_expand: true,
+        y_expand: true,
+        style_class: "controls",
+      });
+
+      let currentMode = _settings.get_string(SETTINGS_CHANGE_MODE);
+      if (currentMode == "different") {
+        this.box.set_style("padding-left: " + (Chooser.THUMB_WIDTH - 30) + "px;");
+      } else {
+        this.box.set_style("padding-left: " + ((Chooser.THUMB_WIDTH / 2) - 36) + "px;"); //36 = button_size*2 + padding*2
+      }
+
+      this.add_child(this.box);
+      this.box.add_actor(new ControlButton("media-playback-start", this._changeWalls));
+      this.box.add_actor(new ControlButton("media-playlist-shuffle", this._newNextWalls));
+
+    }
+
+    _changeWalls() {
+      if (wallUtils != null)
+        wallUtils.changeWallpapers();
+    }
+
+    _newNextWalls() {
+      if (wallUtils != null)
+        wallUtils.setNewNextAndRefresh();
+    }
+  });
+
+const ThumbPreviews = GObject.registerClass(class ThumbPreviews extends PopupMenu.PopupBaseMenuItem {
+  _init(isNextThumbs) {
+    super._init();
     this._isNextThumbs = isNextThumbs;
     //Main Box
     let MainBox = new St.BoxLayout({vertical: false});
@@ -176,7 +186,7 @@ const thumbPreviews = class thumbPreviews extends PopupMenu.PopupBaseMenuItem {
         _indicator.close();
         new Chooser.PictureChooser(whoami, wallUtils).open();
       });
-      desktopBox.add_actor(this.wallIcon.actor);
+      desktopBox.add_actor(this.wallIcon);
       MainBox.add_child(desktopBox);
       MainBox.add_child(new St.Icon({width: 20}));
     }
@@ -196,13 +206,13 @@ const thumbPreviews = class thumbPreviews extends PopupMenu.PopupBaseMenuItem {
           _indicator.close();
           new Chooser.PictureChooser(lockwhoami, wallUtils).open();
         });
-        lockBox.add_child(this.lockIcon.actor);
+        lockBox.add_child(this.lockIcon);
         MainBox.add_child(lockBox);
         break;
     }
     /* End 3nd step*/
     // Add everything to the mainbox
-    this.actor.add_actor(MainBox);
+    this.add_actor(MainBox);
   }
 
   setWallThumb() {
@@ -211,7 +221,7 @@ const thumbPreviews = class thumbPreviews extends PopupMenu.PopupBaseMenuItem {
       newIcon = wallUtils.getNextWall();
     else
       newIcon = wallUtils.getCurrentWall();
-    Tweener.addTween(this.wallIcon.actor, {
+    Tweener.addTween(this.wallIcon, {
       opacity: 0,
       time: 1,
       transition: 'easeOutQuad',
@@ -220,7 +230,7 @@ const thumbPreviews = class thumbPreviews extends PopupMenu.PopupBaseMenuItem {
         thumb.set_gicon(icon);
       }
     });
-    Tweener.addTween(this.wallIcon.actor, {opacity: 255, delay: 1.3, time: 1, transition: 'easeOutQuad'});
+    Tweener.addTween(this.wallIcon, {opacity: 255, delay: 1.3, time: 1, transition: 'easeOutQuad'});
   }
 
 
@@ -230,7 +240,7 @@ const thumbPreviews = class thumbPreviews extends PopupMenu.PopupBaseMenuItem {
       lockIcon = wallUtils.getNextLockWall();
     else
       lockIcon = wallUtils.getCurrentLockWall();
-    Tweener.addTween(this.lockIcon.actor, {
+    Tweener.addTween(this.lockIcon, {
       opacity: 0,
       time: 1,
       transition: 'easeOutQuad',
@@ -239,9 +249,9 @@ const thumbPreviews = class thumbPreviews extends PopupMenu.PopupBaseMenuItem {
         thumb.set_gicon(icon);
       }
     });
-    Tweener.addTween(this.lockIcon.actor, {opacity: 255, delay: 1.3, time: 1, transition: 'easeOutQuad'});
+    Tweener.addTween(this.lockIcon, {opacity: 255, delay: 1.3, time: 1, transition: 'easeOutQuad'});
   }
-};
+});
 
 const RandWallMenu = GObject.registerClass(
   class RandWallMenu extends PanelMenu.Button {
@@ -258,20 +268,20 @@ const RandWallMenu = GObject.registerClass(
       });
       hbox.add_child(icon);
       hbox.add_child(PopupMenu.arrowIcon(St.Side.BOTTOM));
-      this.actor.add_actor(hbox);
+      this.add_actor(hbox);
 
       if (!wallUtils.isEmpty()) {
         //Label current wallpapers
         this.menu.addMenuItem(new LabelWidget(_("CURRENT"), "info"));
         // Current Walls thumbs
-        this.currentThumbs = new thumbPreviews(false);
+        this.currentThumbs = new ThumbPreviews(false);
         this.menu.addMenuItem(this.currentThumbs);
         // Separator
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         //Label current wallpapers
         this.menu.addMenuItem(new LabelWidget(_("NEXT"), "info"));
         // Next Walls thumbs
-        this.nextThumbs = new thumbPreviews(true);
+        this.nextThumbs = new ThumbPreviews(true);
         this.menu.addMenuItem(this.nextThumbs);
         // Separator
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
@@ -285,10 +295,6 @@ const RandWallMenu = GObject.registerClass(
         this.menu.addMenuItem(new ConfigControls());
       }
 
-    }
-
-    destroy() {
-      this.menu.destroy();
     }
 
     _changeBackgrounds() {
@@ -334,8 +340,10 @@ function enable() {
     this.MyTimer.start();
   }
   let hideIcon = _settings.get_boolean(SETTINGS_HIDE_ICON);
+
   if (!hideIcon)
     Main.panel.addToStatusArea('randwall', _indicator, 1, 'right');
+
   _settings.connect('changed::' + SETTINGS_HIDE_ICON, Lang.bind(this, applyChanges));
   _settings.connect('changed::' + SETTINGS_CHANGE_MODE, Lang.bind(this, applyChanges));
   _settings.connect('changed::' + SETTINGS_FOLDER_LIST, Lang.bind(this, applyChanges));
@@ -357,5 +365,8 @@ function applyChanges() {
 
 function disable() {
   _indicator.destroy();
-  this.MyTimer.stop();
+
+  if (this.MyTimer) {
+    this.MyTimer.stop();
+  }
 }
