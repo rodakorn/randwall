@@ -138,6 +138,11 @@ var WallUtils = class WallUtils {
   }
 
   changeWallpapers() {
+    // silence warnings if we removed all directories
+    if (!this._dirs) {
+      return;
+    }
+
     let currentMode = this._settings.get_string(SETTINGS_CHANGE_MODE);
     //DESKTOP CHANGE: Always except if we are in lockscreen mode
     if (currentMode != 'lockscreen')
@@ -173,6 +178,11 @@ var WallUtils = class WallUtils {
   }
 
   setNewNextAndRefresh() {
+    // silence warnings if we removed all directories
+    if (!this._dirs) {
+      return;
+    }
+
     let currentMode = this._settings.get_string(SETTINGS_CHANGE_MODE);
 
     this._nextWall = this.getRandomPicture();
@@ -198,7 +208,7 @@ var WallUtils = class WallUtils {
       fileEnum = null;
     }
     if (fileEnum !== null) {
-      let info, child;
+      let info;
       while ((info = fileEnum.next_file(null)) != null) {
         let child = fileEnum.get_child(info);
         //Check if is a regular file
@@ -236,8 +246,6 @@ var WallUtils = class WallUtils {
   isEmpty() {
     return this._dirs == null;
   }
-
-
 }
 
 var getScreenAspectRatio = function () {
