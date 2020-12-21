@@ -10,6 +10,7 @@ var MyTimer = class MyTimer {
   constructor() {
     this._settings = Convenience.getSettings();
     this._timeout = this._settings.get_int(SETTINGS_TIMEOUT) * 60000;
+    this._timerId = null;
     // Listen to changes and restart with new timeout.
     this._settings.connect('changed::' + SETTINGS_TIMEOUT, Lang.bind(this, function (value) {
       let newValue = value.get_int(SETTINGS_TIMEOUT);

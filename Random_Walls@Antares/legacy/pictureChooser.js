@@ -1,6 +1,5 @@
-const { GObject, St } = imports.gi;
-
 const Lang = imports.lang;
+const St = imports.gi.St;
 const Main = imports.ui.main;
 const Clutter = imports.gi.Clutter;
 const Gdk = imports.gi.Gdk;
@@ -9,6 +8,7 @@ const ModalDialog = imports.ui.modalDialog;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Wallpapers = Me.imports.assets.wallpapers;
 const Convenience = Me.imports.convenience;
+
 const Gettext = imports.gettext.domain('randwall');
 const _ = Gettext.gettext;
 
@@ -22,28 +22,28 @@ const NUM_COLS_TABLE = 4;
 
 let _settings = Convenience.getSettings();
 
-var ThumbIcon = GObject.registerClass(class ThumbIcon extends St.Button {
-  _init(gicon, callback) {
+var ThumbIcon = class ThumbIcon {
+  constructor(gicon, callback) {
     this._icon = new St.Icon({
       gicon: gicon,
       icon_size: THUMB_WIDTH,
       style_class: 'wall-preview'
     });
 
-    super._init({
+    this.actor = new St.Button({
       child: this._icon,
       x_expand: true
     });
 
     this._icon.set_height(THUMB_WIDTH * Wallpapers.getScreenAspectRatio());
 
-    this.connect('clicked', Lang.bind(this, this._callback_internal));
+    this.actor.connect('clicked', Lang.bind(this, this._callback_internal));
     if (callback != undefined || callback != null) {
       this._callback = callback;
     }
 
-    this.connect('enter_event', Lang.bind(this, this.start_hover));
-    this.connect('leave_event', Lang.bind(this, this.stop_hover));
+    this.actor.connect('enter_event', Lang.bind(this, this.start_hover));
+    this.actor.connect('leave_event', Lang.bind(this, this.stop_hover));
   }
 
   _callback_internal(object) {
@@ -68,6 +68,10 @@ var ThumbIcon = GObject.registerClass(class ThumbIcon extends St.Button {
     this._icon.set_style_class_name("wall-preview");
   }
 
+  set_style(style) {
+    this.actor.set_style(style);
+  }
+
   set_gicon(icon) {
     this._icon.set_gicon(icon);
   }
@@ -75,11 +79,11 @@ var ThumbIcon = GObject.registerClass(class ThumbIcon extends St.Button {
   set_style_class(styleClass) {
     this._icon.set_style_class(styleClass);
   }
-});
+};
 
-var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDialog.ModalDialog {
-  _init(whoami, wallutils) {
-    super._init({destroyOnClose: false});
+var PictureChooser = class PictureChooser extends ModalDialog.ModalDialog {
+  constructor(whoami, wallutils) {
+    super({destroyOnClose: false});
     this._wallUtils = wallutils;
     this._whoami = whoami;
 
@@ -100,23 +104,26 @@ var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDia
 
   _createLayout() {
     //CLOSE BUTTON
-    this.contentLayout.add(this._create_close_button());
+    this.contentLayout.add(this._create_close_button(), {
+      x_fill: false,
+      x_align: St.Align.END,
+      y_fill: false,
+      y_align: St.Align.START
+    });
     //SEARCH
-    this.contentLayout.add(this._create_search_bar());
+    this.contentLayout.add(this._create_search_bar(), {x_fill: false});
 
     //THUMBS TABLE
     let thumbsTable = this._create_thumbs_table();
     this.contentLayout.add(thumbsTable);
-
   }
 
   _create_search_bar() {
     this._search_box = new St.BoxLayout({
       vertical: false,
-      width: THUMB_WIDTH * (NUM_COLS_TABLE + 1) - 35,
+      width: THUMB_WIDTH * 2,
       style_class: 'modal-search-bar',
-      margin_bottom: 10,
-      x_expand: true
+      margin_bottom: 10
     });
 
     let icon = new St.Icon({
@@ -128,19 +135,15 @@ var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDia
       reactive: false,
       name: 'search-icon',
       style_class: 'modal-search-icon',
-      y_align: St.Align.MIDDLE
     });
 
     this._search_icon.add_actor(icon);
 
     this._search_bar = new St.Entry({
+      width: THUMB_WIDTH * 2 - 40,
       y_align: St.Align.MIDDLE,
       hint_text: _("Search image"),
-      style_class: "hint-text",
-      y_align: St.Align.MIDDLE,
-      width: THUMB_WIDTH * NUM_COLS_TABLE + 30,
-      y_expand: true,
-      x_expand: false
+      style_class: "hint-text"
     });
 
     this._search_bar.clutter_text.connect('text-changed', Lang.bind(this, this.redraw));
@@ -149,8 +152,8 @@ var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDia
       this._search_box.add_style_class_name("modal-search-bar-focus");
     }));
 
-    this._search_box.add(this._search_icon);
-    this._search_box.add(this._search_bar);
+    this._search_box.add(this._search_icon, {y_align: St.Align.MIDDLE});
+    this._search_box.add(this._search_bar, {y_align: St.Align.MIDDLE, y_fill: false, x_expand: true})
     return this._search_box;
   }
 
@@ -192,10 +195,9 @@ var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDia
     let scroll = new St.ScrollView({
       style_class: 'chooser-box-table',
       name: 'thumbs-box',
-      height: 550,
-      y_expand: true
     });
 
+    scroll.set_height(700);
     this._super_box = new St.BoxLayout({
       y_expand: true,
       x_expand: true,
@@ -240,10 +242,10 @@ var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDia
         });
       })(this);
 
-      image.row = table_row;
-      image.col = table_col;
-
-      table.add(image);
+      table.add(image.actor, {
+        row: table_row,
+        col: table_col
+      });
 
       //set a new column
       table_col = (table_col + 1) % NUM_COLS_TABLE;
@@ -260,22 +262,21 @@ var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDia
     scroll.add_actor(this._super_box);
 
     return scroll;
+
   }
 
   _create_thumbs_table() {
     let scroll = new St.ScrollView({
       style_class: 'chooser-box-table',
       name: 'thumbs-box',
-      height: 550,
-      y_expand: true
     });
 
+    scroll.set_height(700);
     this._super_box = new St.BoxLayout({
       y_expand: true,
       x_expand: true,
       vertical: true
     });
-
     this._super_box.set_width(THUMB_WIDTH * (NUM_COLS_TABLE + 1) - 35);
 
     let dirs;
@@ -307,7 +308,6 @@ var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDia
               //For every row create a table
               if (table_col == 0)
                 table = new St.BoxLayout({x_expand: true, vertical: false, style_class: "chooser-row-box-table"});
-
               //create a icon with the current image
               let image = new ThumbIcon(this._wallUtils.getGiconFromPath(imagepath), null);
               //set the callback
@@ -333,10 +333,10 @@ var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDia
                 });
               })(this);
 
-              image.row = table_row;
-              image.col = table_col;
-
-              table.add(image);
+              table.add(image.actor, {
+                row: table_row,
+                col: table_col
+              });
 
               //set a new column
               table_col = (table_col + 1) % NUM_COLS_TABLE;
@@ -368,11 +368,7 @@ var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDia
     let button = new St.Button({
       reactive: true,
       style_class: 'modal-close-button',
-      track_hover: true,
-      x_expand: true,
-      x_align: St.Align.END,
-      y_expand: false,
-      y_align: St.Align.START
+      track_hover: true
     });
 
     button.connect('clicked', Lang.bind(this, function () {
@@ -451,4 +447,4 @@ var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDia
       this.contentLayout.replace_child(this.contentLayout.find_child_by_name('thumbs-box'), new_scroll);
     }
   }
-});
+};

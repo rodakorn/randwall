@@ -62,19 +62,25 @@ const RandWallSettingsWidget = new GObject.Class({
 		let range = this._settings.get_range(SETTINGS_CHANGE_MODE);
 		let currentMode = this._settings.get_string(SETTINGS_CHANGE_MODE);
 		let modes = range.deep_unpack()[1].deep_unpack();
+		
 		let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,row_spacing: 6,column_spacing: 6,margin_top: 6, margin_left: 20 });
-		for (var i = 0; i < modes.length; i++) {
+		for (let i = 0; i < modes.length; i++) {
             let mode = modes[i];
             let label = modeLabels[mode];
             if (!label) {
                log('Unhandled option "%s" for lock-mode'.format(mode));
                continue;
             }
-
             radio = new Gtk.RadioButton({ active: currentMode == mode,
                                           label: label,
-                                          group: radio });
-            grid.add(radio);
+										  group: radio });
+										  
+			grid.add(radio);
+			
+			if (currentMode === mode) {
+				radio.set_active(true);
+			}
+
             radio.connect('toggled', Lang.bind(this, function(button) {
                 if (button.active)
                     this._settings.set_string(SETTINGS_CHANGE_MODE, mode);
@@ -88,7 +94,10 @@ const RandWallSettingsWidget = new GObject.Class({
 		//Hide Icon
 		let gHBoxHideIcon = new Gtk.HBox({margin:10, spacing: 20, hexpand: true});
 		gHBoxHideIcon.add(new Gtk.Label({label: _("Hide Icon"),halign: Gtk.Align.START, margin: 10}));
-		let iconSwitch = new Gtk.Switch({halign: Gtk.Align.END});
+		let iconSwitch = new Gtk.Switch({
+			active: this._settings.get_boolean(SETTINGS_HIDE_ICON),
+			halign: Gtk.Align.END
+		});
 		gHBoxHideIcon.add(iconSwitch);
 		this.add(gHBoxHideIcon);
 		this.add(new Gtk.HSeparator());
@@ -146,8 +155,6 @@ const RandWallSettingsWidget = new GObject.Class({
 		
         this._changedPermitted = true;
         this._refresh();
-
-
     },
     
   
