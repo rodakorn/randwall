@@ -31,5 +31,10 @@
       <description>Decide how you want your wallpapers changed. Values are "different" for changing desktop and lockscreen randomly, "same" changes destkop and lockscreen using the same image on both, "desktop" for changing only desktop wallpaper and "lockscreen" for chaging only the lockscreen wallpaper.</description>
     </key>
 
+    <key name="change-timestamp" type="x">
+      <default>0</default>
+      <summary>Time since last wallpaper change</summary>
+      <description>Represents the last time (UNIX epoch) the wallpaper changed to prevent immediately changing the wallpaper on login. This is normally automatically updated, but you can set it to zero to force a change on next login.</description>
+    </key>
   </schema>
 </schemalist>
