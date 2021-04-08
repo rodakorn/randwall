@@ -7,12 +7,13 @@ const Wallpapers = Me.imports.assets.wallpapers;
 const Lang = imports.lang;
 const Config = imports.misc.config;
 
+let shellMajorVersion = parseInt(Config.PACKAGE_VERSION.split('.')[0]);
 let shellMinorVersion = parseInt(Config.PACKAGE_VERSION.split('.')[1]);
 
 let RandWallMenu;
 let wallUtils;
 
-if (shellMinorVersion > 30) {
+if (shellMajorVersion >= 40 || shellMinorVersion > 30) {
   RandWallMenu = Me.imports.assets.menu.RandWallMenu;
 } else {
   RandWallMenu = Me.imports.legacy.menu.RandWallMenu
