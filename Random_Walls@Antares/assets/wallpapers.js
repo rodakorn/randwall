@@ -100,10 +100,8 @@ var WallUtils = class WallUtils {
   setLockWall(picture) {
     let lockbackground_setting = new Gio.Settings({schema: 'org.gnome.desktop.screensaver'});
 
-    for (let i = 0; i < PICTURE_URIS.length; i++) {
-      lockbackground_setting.set_string(PICTURE_URIS[i],
-        'file://' + picture.split('/').map(c => encodeURIComponent(c)).join('/'));
-    }
+    lockbackground_setting.set_string(PICTURE_URIS[0],
+      'file://' + picture.split('/').map(c => encodeURIComponent(c)).join('/'));
   }
 
   setNextLockWall(picture) {
