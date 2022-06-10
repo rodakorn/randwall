@@ -83,7 +83,7 @@ const ConfigControls = class ConfigControls extends PopupMenu.PopupBaseMenuItem 
       style_class: "controls",
     });
 
-    this.actor.add(this.box, {expand: true});
+    this.actor.add(this.box, { expand: true });
     this.box.add_actor(new ControlButton("list-add", this._openConfigWidget).actor);
 
   }
@@ -119,7 +119,7 @@ var NextWallControls = class NextWallControls extends PopupMenu.PopupBaseMenuIte
     } else
       this.box.set_style("padding-left: " + ((Chooser.THUMB_WIDTH / 2) - 36) + "px;"); //36 = button_size*2 + padding*2
 
-    this.actor.add(this.box, {expand: true});
+    this.actor.add(this.box, { expand: true });
     this.box.add_actor(new ControlButton("media-playback-start", Lang.bind(this, this._changeWalls)).actor);
     this.box.add_actor(new ControlButton("media-playlist-shuffle", Lang.bind(this, this._newNextWalls)).actor);
 
@@ -143,9 +143,9 @@ var thumbPreviews = class thumbPreviews extends PopupMenu.PopupBaseMenuItem {
     this._wallUtils = wallUtils;
 
     //Main Box
-    let MainBox = new St.BoxLayout({vertical: false});
+    let MainBox = new St.BoxLayout({ vertical: false });
     //Label + Icon Desktop Wallpaper Box
-    let desktopBox = new St.BoxLayout({vertical: true});
+    let desktopBox = new St.BoxLayout({ vertical: true });
     let currentMode = _settings.get_string(SETTINGS_CHANGE_MODE);
     let textLabel, whoami;
     /* 1st step: Label and identifier */
@@ -164,7 +164,7 @@ var thumbPreviews = class thumbPreviews extends PopupMenu.PopupBaseMenuItem {
         whoami = (this._isNextThumbs) ? NEXT_LOCK : CURRENT_LOCK;
         break;
     }
-    desktopBox.add_child(new St.Label({text: textLabel, style_class: "label-thumb"}));
+    desktopBox.add_child(new St.Label({ text: textLabel, style_class: "label-thumb" }));
     /* End 1st step */
 
     /* 2nd step: Create wallIcon (only if not in lockscreen mode)*/
@@ -176,7 +176,7 @@ var thumbPreviews = class thumbPreviews extends PopupMenu.PopupBaseMenuItem {
       });
       desktopBox.add_actor(this.wallIcon.actor);
       MainBox.add_child(desktopBox);
-      MainBox.add_child(new St.Icon({width: 20}));
+      MainBox.add_child(new St.Icon({ width: 20 }));
     }
     /* End 2nd step */
 
@@ -187,8 +187,8 @@ var thumbPreviews = class thumbPreviews extends PopupMenu.PopupBaseMenuItem {
         //whoami was NEXT or CURRENT desktop on the 1st step. Now is NEXT or CURRENT lock
         lockwhoami = (this._isNextThumbs) ? NEXT_LOCK : CURRENT_LOCK;
       case "lockscreen":
-        let lockBox = new St.BoxLayout({vertical: true});
-        lockBox.add_child(new St.Label({text: _("Lockscreen"), style_class: "label-thumb"}));
+        let lockBox = new St.BoxLayout({ vertical: true });
+        lockBox.add_child(new St.Label({ text: _("Lockscreen"), style_class: "label-thumb" }));
         let lockwall = wallUtils.getCurrentLockWall();
         this.lockIcon = new Chooser.ThumbIcon(lockwall, function () {
           indicator.close();
@@ -231,7 +231,7 @@ var RandWallMenu = class RandWallMenu extends PanelMenu.Button {
 
     this._wallUtils = wallUtils;
 
-    let hbox = new St.BoxLayout({style_class: 'panel-status-menu-box'});
+    let hbox = new St.BoxLayout({ style_class: 'panel-status-menu-box' });
     let gicon = imports.gi.Gio.icon_new_for_string(Me.path + "/icons/randwall-symbolic.symbolic.png");
     let icon = new St.Icon({
       style_class: 'system-status-icon randwall-icon',

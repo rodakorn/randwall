@@ -65,31 +65,31 @@ var WallUtils = class WallUtils {
   }
 
   getCurrentWall() {
-    let background_setting = new Gio.Settings({schema: 'org.gnome.desktop.background'});
+    let background_setting = new Gio.Settings({ schema: 'org.gnome.desktop.background' });
     let pathFromURI = decodeURIComponent(background_setting.get_string(PICTURE_URIS[0])).replace(/^file:\/\//g, '');
-    return new Gio.FileIcon({file: Gio.File.new_for_path(pathFromURI)});
+    return new Gio.FileIcon({ file: Gio.File.new_for_path(pathFromURI) });
   }
 
   getCurrentLockWall() {
-    let lockbackground_setting = new Gio.Settings({schema: 'org.gnome.desktop.screensaver'});
+    let lockbackground_setting = new Gio.Settings({ schema: 'org.gnome.desktop.screensaver' });
     let pathFromURI = decodeURIComponent(lockbackground_setting.get_string(PICTURE_URIS[0])).replace(/^file:\/\//g, '');
-    return new Gio.FileIcon({file: Gio.File.new_for_path(pathFromURI)});
+    return new Gio.FileIcon({ file: Gio.File.new_for_path(pathFromURI) });
   }
 
   getGiconFromPath(path) {
-    return new Gio.FileIcon({file: Gio.File.new_for_path(path)});
+    return new Gio.FileIcon({ file: Gio.File.new_for_path(path) });
   }
 
   getNextWall() {
-    return new Gio.FileIcon({file: Gio.File.new_for_path(this._nextWall)});
+    return new Gio.FileIcon({ file: Gio.File.new_for_path(this._nextWall) });
   }
 
   getNextLockWall() {
-    return new Gio.FileIcon({file: Gio.File.new_for_path(this._nextLock)});
+    return new Gio.FileIcon({ file: Gio.File.new_for_path(this._nextLock) });
   }
 
   setWall(picture) {
-    let background_setting = new Gio.Settings({schema: 'org.gnome.desktop.background'});
+    let background_setting = new Gio.Settings({ schema: 'org.gnome.desktop.background' });
 
     for (let i = 0; i < PICTURE_URIS.length; i++) {
       background_setting.set_string(PICTURE_URIS[i],
@@ -98,7 +98,7 @@ var WallUtils = class WallUtils {
   }
 
   setLockWall(picture) {
-    let lockbackground_setting = new Gio.Settings({schema: 'org.gnome.desktop.screensaver'});
+    let lockbackground_setting = new Gio.Settings({ schema: 'org.gnome.desktop.screensaver' });
 
     lockbackground_setting.set_string(PICTURE_URIS[0],
       'file://' + picture.split('/').map(c => encodeURIComponent(c)).join('/'));
@@ -261,7 +261,7 @@ var WallUtils = class WallUtils {
 }
 
 var getScreenAspectRatio = function () {
-  let background_setting = new Gio.Settings({schema: 'org.gnome.desktop.background'});
+  let background_setting = new Gio.Settings({ schema: 'org.gnome.desktop.background' });
   let background_mode = background_setting.get_string(SETTINGS_BACKGROUND_MODE);
   if (background_mode == 'spanned') {
     return Gdk.Screen.height() / Gdk.Screen.width();

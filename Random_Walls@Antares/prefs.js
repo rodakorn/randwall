@@ -10,9 +10,9 @@ let shellMajorVersion = parseInt(Config.PACKAGE_VERSION.split('.')[0]);
 let RandWallSettingsWidget;
 
 if (shellMajorVersion >= 40) {
-  RandWallSettingsWidget = Me.imports.assets.settings.RandWallSettingsWidget;
+	RandWallSettingsWidget = Me.imports.assets.settings.RandWallSettingsWidget;
 } else {
-  RandWallSettingsWidget = Me.imports.legacy.settings.RandWallSettingsWidget;
+	RandWallSettingsWidget = Me.imports.legacy.settings.RandWallSettingsWidget;
 }
 
 function init() {

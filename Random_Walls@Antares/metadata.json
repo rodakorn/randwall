@@ -1,9 +1,22 @@
 {
-    "shell-version": ["3.14","3.16","3.18","3.20","3.22", "3.30", "3.32", "3.34", "3.36", "3.38", "40"],
+    "shell-version": [
+        "3.14",
+        "3.16",
+        "3.18",
+        "3.20",
+        "3.22",
+        "3.30",
+        "3.32",
+        "3.34",
+        "3.36",
+        "3.38",
+        "40",
+        "42"
+    ],
     "uuid": "Random_Walls@Antares",
     "url": "https://github.com/rodakorn/randwall",
     "settings-schema": "org.gnome.shell.extensions.randwall",
-    "gettext-domain" : "randwall",
+    "gettext-domain": "randwall",
     "name": "Random Walls",
     "description": "Change desktop and lockscreen wallpapers randomly"
 }
