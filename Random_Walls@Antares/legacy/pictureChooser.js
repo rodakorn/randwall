@@ -83,7 +83,7 @@ var ThumbIcon = class ThumbIcon {
 
 var PictureChooser = class PictureChooser extends ModalDialog.ModalDialog {
   constructor(whoami, wallutils) {
-    super({destroyOnClose: false});
+    super({ destroyOnClose: false });
     this._wallUtils = wallutils;
     this._whoami = whoami;
 
@@ -111,7 +111,7 @@ var PictureChooser = class PictureChooser extends ModalDialog.ModalDialog {
       y_align: St.Align.START
     });
     //SEARCH
-    this.contentLayout.add(this._create_search_bar(), {x_fill: false});
+    this.contentLayout.add(this._create_search_bar(), { x_fill: false });
 
     //THUMBS TABLE
     let thumbsTable = this._create_thumbs_table();
@@ -152,8 +152,8 @@ var PictureChooser = class PictureChooser extends ModalDialog.ModalDialog {
       this._search_box.add_style_class_name("modal-search-bar-focus");
     }));
 
-    this._search_box.add(this._search_icon, {y_align: St.Align.MIDDLE});
-    this._search_box.add(this._search_bar, {y_align: St.Align.MIDDLE, y_fill: false, x_expand: true})
+    this._search_box.add(this._search_icon, { y_align: St.Align.MIDDLE });
+    this._search_box.add(this._search_bar, { y_align: St.Align.MIDDLE, y_fill: false, x_expand: true })
     return this._search_box;
   }
 
@@ -215,7 +215,7 @@ var PictureChooser = class PictureChooser extends ModalDialog.ModalDialog {
     let table;
     for (var i = 0; i < images.length; i++) {
       if (table_col == 0)
-        table = new St.BoxLayout({x_expand: true, style_class: "chooser-row-box-table"});
+        table = new St.BoxLayout({ x_expand: true, style_class: "chooser-row-box-table" });
 
       //create a icon with the current image
       let imagepath = images[i];
@@ -302,12 +302,12 @@ var PictureChooser = class PictureChooser extends ModalDialog.ModalDialog {
           let child = fileEnum.get_child(info);
           //Check if is a regular file
           if (info.get_file_type() == Gio.FileType.REGULAR)
-          //Check if file is a valid image
+            //Check if file is a valid image
             if (info.get_content_type().match(/^image\//i)) {
               let imagepath = child.get_parse_name();
               //For every row create a table
               if (table_col == 0)
-                table = new St.BoxLayout({x_expand: true, vertical: false, style_class: "chooser-row-box-table"});
+                table = new St.BoxLayout({ x_expand: true, vertical: false, style_class: "chooser-row-box-table" });
               //create a icon with the current image
               let image = new ThumbIcon(this._wallUtils.getGiconFromPath(imagepath), null);
               //set the callback

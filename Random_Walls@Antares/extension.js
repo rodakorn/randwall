@@ -7,12 +7,13 @@ const Wallpapers = Me.imports.assets.wallpapers;
 const Lang = imports.lang;
 const Config = imports.misc.config;
 
+let shellMajorVersion = parseInt(Config.PACKAGE_VERSION.split('.')[0]);
 let shellMinorVersion = parseInt(Config.PACKAGE_VERSION.split('.')[1]);
 
 let RandWallMenu;
 let wallUtils;
 
-if (shellMinorVersion > 30) {
+if (shellMajorVersion >= 40 || shellMinorVersion > 30) {
   RandWallMenu = Me.imports.assets.menu.RandWallMenu;
 } else {
   RandWallMenu = Me.imports.legacy.menu.RandWallMenu
@@ -21,11 +22,11 @@ if (shellMinorVersion > 30) {
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
-const SETTINGS_FOLDER_LIST = "folder-list";
-const SETTINGS_CHANGE_MODE = "change-mode";
-const SETTINGS_HIDE_ICON = "hide-icon";
-const SETTINGS_TIMEOUT = "change-time";
-const SETTINGS_CHANGE_TIMESTAMP = "change-timestamp";
+var SETTINGS_FOLDER_LIST = "folder-list";
+var SETTINGS_CHANGE_MODE = "change-mode";
+var SETTINGS_HIDE_ICON = "hide-icon";
+var SETTINGS_TIMEOUT = "change-time";
+var SETTINGS_CHANGE_TIMESTAMP = "change-timestamp";
 
 function init(metadata) {
   _settings = Convenience.getSettings();
@@ -70,7 +71,7 @@ function enable() {
     } else {
       const timer = MyTimer;
 
-      _wait_timer = GLib.timeout_add(GLib.PRIORITY_DEFAULT, expected_change_time - now, function() {
+      _wait_timer = GLib.timeout_add(GLib.PRIORITY_DEFAULT, expected_change_time - now, function () {
         // if the timeout was changed (even if it is the same value now), do not start a second time
         if (!timer.changed()) {
           wallUtils.changeWallpapers();

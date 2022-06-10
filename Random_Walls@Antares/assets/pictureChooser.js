@@ -79,7 +79,7 @@ var ThumbIcon = GObject.registerClass(class ThumbIcon extends St.Button {
 
 var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDialog.ModalDialog {
   _init(whoami, wallutils) {
-    super._init({destroyOnClose: false});
+    super._init({ destroyOnClose: false });
     this._wallUtils = wallutils;
     this._whoami = whoami;
 
@@ -212,8 +212,9 @@ var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDia
     let table_col = 0;
     let table;
     for (var i = 0; i < images.length; i++) {
-      if (table_col == 0)
-        table = new St.BoxLayout({x_expand: true, style_class: "chooser-row-box-table"});
+      if (table_col == 0) {
+        table = new St.BoxLayout({ x_expand: true, style_class: "chooser-row-box-table" });
+      }
 
       //create a icon with the current image
       let imagepath = images[i];
@@ -301,12 +302,12 @@ var PictureChooser = GObject.registerClass(class PictureChooser extends ModalDia
           let child = fileEnum.get_child(info);
           //Check if is a regular file
           if (info.get_file_type() == Gio.FileType.REGULAR)
-          //Check if file is a valid image
+            //Check if file is a valid image
             if (info.get_content_type().match(/^image\//i)) {
               let imagepath = child.get_parse_name();
               //For every row create a table
               if (table_col == 0)
-                table = new St.BoxLayout({x_expand: true, vertical: false, style_class: "chooser-row-box-table"});
+                table = new St.BoxLayout({ x_expand: true, vertical: false, style_class: "chooser-row-box-table" });
 
               //create a icon with the current image
               let image = new ThumbIcon(this._wallUtils.getGiconFromPath(imagepath), null);

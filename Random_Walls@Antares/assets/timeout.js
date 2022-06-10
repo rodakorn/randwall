@@ -12,7 +12,7 @@ var MyTimer = class MyTimer {
     this._timeout = this._settings.get_int(SETTINGS_TIMEOUT) * 60000;
     this._timerId = null;
     this._changed = false;
-  
+
     // Listen to changes and restart with new timeout.
     this._settings.connect('changed::' + SETTINGS_TIMEOUT, Lang.bind(this, function (value) {
       let newValue = value.get_int(SETTINGS_TIMEOUT);

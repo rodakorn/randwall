@@ -100,7 +100,10 @@ var ConfigControls = GObject.registerClass(
     _openConfigWidget() {
       let _appSys = Shell.AppSystem.get_default();
       let _gsmPrefs = _appSys.lookup_app("org.gnome.Extensions.desktop");
-      if (_gsmPrefs.get_state() == _gsmPrefs.SHELL_APP_STATE_RUNNING) {
+      // The proper value is Shell.AppState.RUNNING; Not sure what the other value is, but it's kept
+      // in as that was there previously 
+      // See: (https://gjs-docs.gnome.org/shell01~0.1_api/shell.appstate)
+      if (_gsmPrefs.get_state() == _gsmPrefs.SHELL_APP_STATE_RUNNING || Shell.AppState.RUNNING) {
         _gsmPrefs.activate();
       } else {
         let info = _gsmPrefs.get_app_info();
@@ -154,9 +157,9 @@ var ThumbPreviews = GObject.registerClass(class ThumbPreviews extends PopupMenu.
     this._isNextThumbs = isNextThumbs;
     this._wallUtils = wallUtils;
     //Main Box
-    let MainBox = new St.BoxLayout({vertical: false});
+    let MainBox = new St.BoxLayout({ vertical: false });
     //Label + Icon Desktop Wallpaper Box
-    let desktopBox = new St.BoxLayout({vertical: true});
+    let desktopBox = new St.BoxLayout({ vertical: true });
     let currentMode = _settings.get_string(SETTINGS_CHANGE_MODE);
     let textLabel, whoami;
     /* 1st step: Label and identifier */
@@ -175,7 +178,7 @@ var ThumbPreviews = GObject.registerClass(class ThumbPreviews extends PopupMenu.
         whoami = (this._isNextThumbs) ? NEXT_LOCK : CURRENT_LOCK;
         break;
     }
-    desktopBox.add_child(new St.Label({text: textLabel, style_class: "label-thumb"}));
+    desktopBox.add_child(new St.Label({ text: textLabel, style_class: "label-thumb" }));
     /* End 1st step */
 
     /* 2nd step: Create wallIcon (only if not in lockscreen mode)*/
@@ -187,7 +190,7 @@ var ThumbPreviews = GObject.registerClass(class ThumbPreviews extends PopupMenu.
       });
       desktopBox.add_actor(this.wallIcon);
       MainBox.add_child(desktopBox);
-      MainBox.add_child(new St.Icon({width: 20}));
+      MainBox.add_child(new St.Icon({ width: 20 }));
     }
     /* End 2nd step */
 
@@ -198,8 +201,8 @@ var ThumbPreviews = GObject.registerClass(class ThumbPreviews extends PopupMenu.
         //whoami was NEXT or CURRENT desktop on the 1st step. Now is NEXT or CURRENT lock
         lockwhoami = (this._isNextThumbs) ? NEXT_LOCK : CURRENT_LOCK;
       case "lockscreen":
-        let lockBox = new St.BoxLayout({vertical: true});
-        lockBox.add_child(new St.Label({text: _("Lockscreen"), style_class: "label-thumb"}));
+        let lockBox = new St.BoxLayout({ vertical: true });
+        lockBox.add_child(new St.Label({ text: _("Lockscreen"), style_class: "label-thumb" }));
         let lockwall = wallUtils.getCurrentLockWall();
         this.lockIcon = new Chooser.ThumbIcon(lockwall, function () {
           indicator.close();
@@ -245,7 +248,7 @@ var RandWallMenu = GObject.registerClass(
 
       this._wallUtils = wallUtils;
 
-      let hbox = new St.BoxLayout({style_class: 'panel-status-menu-box'});
+      let hbox = new St.BoxLayout({ style_class: 'panel-status-menu-box' });
       let gicon = imports.gi.Gio.icon_new_for_string(Me.path + "/icons/randwall-symbolic.symbolic.png");
       let icon = new St.Icon({
         style_class: 'system-status-icon randwall-icon',
